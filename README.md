@@ -1,24 +1,11 @@
-# Mansi Chauhan Portfolio
 
-A playful, interactive product design portfolio inspired by tactile therapy-site motion, bold cards, sunny colors, floating illustrations, and smooth scroll storytelling. The selected-work section uses a sticky parallax deck: the first card flips on scroll, then the stacked project cards underneath reveal one by one.
+  # Create parallax effect
 
-## Run locally
+  This is a code bundle for Create parallax effect. The original project is available at https://www.figma.com/design/rVhqkq3yR3pqnBsOKZ5VEx/Create-parallax-effect.
 
-Open `index.html` directly in a browser, or serve the folder with any static server:
+  ## Running the code
 
-```bash
-python3 -m http.server 4173
-```
+  Run `npm i` to install the dependencies.
 
-Then visit <http://localhost:4173>. Scroll to the Work section to test the card flip, stack reveal, and reduced-motion fallback.
-
-## Portfolio content strategy
-
-Recommended case-study set:
-
-1. **AI Agents for Outreach** — flagship case study for healthcare AI, trust, and workflow design.
-2. **Strategy UI Builder + Strategy AI Workflows** — systems-thinking case study showing no-code strategy design and AI-assisted design-to-engineering handoff.
-3. **Medication Review Revamp** — clinical-complexity case study showing dense information design and DS collaboration.
-4. **SMS + EHR Writeback Workflows** — shorter operational story showing how patient communication reaches clinical records.
-
-College projects should be included only if they add a missing dimension such as visual craft, research depth, or a non-healthcare story that makes the portfolio feel more approachable.
+  Run `npm run dev` to start the development server.
+  
