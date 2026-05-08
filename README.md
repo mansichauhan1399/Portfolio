@@ -1,6 +1,6 @@
 # Mansi Chauhan Portfolio
 
-A playful, interactive product design portfolio inspired by tactile therapy-site motion, bold cards, sunny colors, floating illustrations, and smooth scroll storytelling.
+A playful, interactive product design portfolio inspired by tactile therapy-site motion, bold cards, sunny colors, floating illustrations, and smooth scroll storytelling. The selected-work section uses a sticky parallax deck: the first card flips on scroll, then the stacked project cards underneath reveal one by one.
 
 ## Run locally
 
@@ -10,7 +10,7 @@ Open `index.html` directly in a browser, or serve the folder with any static ser
 python3 -m http.server 4173
 ```
 
-Then visit <http://localhost:4173>.
+Then visit <http://localhost:4173>. Scroll to the Work section to test the card flip, stack reveal, and reduced-motion fallback.
 
 ## Portfolio content strategy
 
