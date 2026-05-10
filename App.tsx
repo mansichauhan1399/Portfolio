@@ -1,240 +1,182 @@
-import { useRef } from "react";
-import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function App() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ container: containerRef });
-  const shouldReduceMotion = useReducedMotion();
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 130,
-    damping: 28,
-    mass: 0.18,
-    restDelta: 0.001,
-  });
-  const cardProgress = shouldReduceMotion ? scrollYProgress : smoothProgress;
+  const pageRef = useRef<HTMLDivElement>(null);
+  const pinRef = useRef<HTMLElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const bgRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
+  const orangeRef = useRef<HTMLDivElement>(null);
+  const stackRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<HTMLDivElement[]>([]);
 
-  // Hero layer moves up fast (1x speed)
-  const heroY = useTransform(scrollYProgress, [0, 0.2], [0, -840]);
-  
-  // Background (clouds/balloons) moves up slower (parallax)
-  const bgY = useTransform(scrollYProgress, [0, 1], [888, -1568]);
-  
-  // Selected-work cards: one pinned, layered stack that reveals through scroll.
-  // The first card enters alone, flips away, then exposes the stacked cards below.
-  const cardStackY = useTransform(cardProgress, [0, 0.13, 0.16], [170, -486, -486]);
-  const cardStackScale = useTransform(cardProgress, [0, 0.13, 0.82], [0.98, 1, 0.99]);
+  useEffect(() => {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  const card1RotateY = useTransform(
-    cardProgress,
-    [0.16, 0.25, 0.36],
-    shouldReduceMotion ? [0, 0, 0] : [0, -92, -180],
-  );
-  const card1RotateZ = useTransform(cardProgress, [0.16, 0.25, 0.36], shouldReduceMotion ? [0, 0, 0] : [0, -5, -10]);
-  const card1Opacity = useTransform(cardProgress, shouldReduceMotion ? [0.30, 0.34] : [0.32, 0.38], [1, 0]);
+    const ctx = gsap.context(() => {
+      const cards = cardsRef.current;
 
-  const stackOpacity = useTransform(cardProgress, shouldReduceMotion ? [0.22, 0.30] : [0.25, 0.34], [0, 1]);
-  const card2X = useTransform(cardProgress, [0.28, 0.40, 0.60], [0, -22, -54]);
-  const card2Y = useTransform(cardProgress, [0.28, 0.40, 0.60], [0, 8, 16]);
-  const card2RotateZ = useTransform(cardProgress, [0.28, 0.40, 0.60], [0, -3, -7]);
-  const card2Scale = useTransform(cardProgress, [0.28, 0.60], [0.99, 0.97]);
-  const card2RotateY = useTransform(
-    cardProgress,
-    [0.42, 0.52, 0.64],
-    shouldReduceMotion ? [0, 0, 0] : [0, -94, -180],
-  );
-  const card2Opacity = useTransform(cardProgress, [0.28, 0.34, 0.60, 0.66], [0, 1, 1, 0]);
+      gsap.set(stageRef.current, { transformOrigin: "top center" });
+      gsap.set(bgRef.current, { y: 888, force3D: true });
+      gsap.set(heroRef.current, { y: 0, force3D: true });
+      gsap.set(orangeRef.current, { y: 0, opacity: 1, force3D: true });
+      gsap.set(stackRef.current, {
+        y: 170,
+        scale: 0.98,
+        transformPerspective: 1400,
+        transformStyle: "preserve-3d",
+        transformOrigin: "50% 50%",
+        force3D: true,
+      });
 
-  const card3Opacity = useTransform(cardProgress, [0.46, 0.54], [0, 1]);
-  const card3X = useTransform(cardProgress, [0.46, 0.64, 0.82], [0, 26, 62]);
-  const card3Y = useTransform(cardProgress, [0.46, 0.64, 0.82], [0, 13, 22]);
-  const card3RotateZ = useTransform(cardProgress, [0.46, 0.64, 0.82], [0, 3, 7]);
-  const card3Scale = useTransform(cardProgress, [0.46, 0.82], [0.98, 0.955]);
-  const card3RotateY = useTransform(
-    cardProgress,
-    [0.66, 0.76, 0.88],
-    shouldReduceMotion ? [0, 0, 0] : [0, -94, -180],
-  );
-  const card3FlipOpacity = useTransform(cardProgress, [0.82, 0.89], [1, 0]);
+      gsap.set(cards, {
+        transformOrigin: "50% 50%",
+        transformStyle: "preserve-3d",
+        backfaceVisibility: "hidden",
+        force3D: true,
+      });
 
-  const card4Opacity = useTransform(cardProgress, [0.72, 0.82], [0, 1]);
-  const card4X = useTransform(cardProgress, [0.72, 0.94], [0, -12]);
-  const card4Y = useTransform(cardProgress, [0.72, 0.94], [0, 10]);
-  const card4RotateZ = useTransform(cardProgress, [0.72, 0.94], [0, -2]);
+      gsap.set(cards[0], { opacity: 0, x: 0, y: 0, rotate: -2, rotateY: -18, scale: 0.96, zIndex: 4 });
+      gsap.set(cards[1], { opacity: 0, x: -18, y: 18, rotate: -4, scale: 0.98, zIndex: 3 });
+      gsap.set(cards[2], { opacity: 0, x: 18, y: 24, rotate: 3, scale: 0.96, zIndex: 2 });
+      gsap.set(cards[3], { opacity: 0, x: 8, y: 32, rotate: 1, scale: 0.94, zIndex: 1 });
 
-  // Clouds in hero section drift continuously (handled by CSS animation below)
-  // Orange decoration opacity
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
+      const timeline = gsap.timeline({
+        defaults: {
+          ease: reduceMotion ? "none" : "power3.inOut",
+          duration: reduceMotion ? 0.01 : 0.9,
+        },
+        scrollTrigger: {
+          trigger: pinRef.current,
+          start: "top top",
+          end: () => `+=${Math.max(window.innerHeight * 4.5, 4200)}`,
+          scrub: reduceMotion ? true : 0.9,
+          pin: true,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      timeline
+        .to(bgRef.current, { y: -1568, ease: "none", duration: 7 }, 0)
+        .to(heroRef.current, { y: -840, duration: 1.15 }, 0)
+        .to(orangeRef.current, { y: -840, opacity: 0, duration: 1.15 }, 0)
+        .to(stackRef.current, { y: -486, scale: 1, duration: 1.15 }, 0)
+        .to(cards[0], { opacity: 1, rotate: 0, rotateY: 0, scale: 1, duration: 0.65 }, 0.18)
+        .to(cards.slice(1), { opacity: 1, stagger: 0.08, duration: 0.45 }, 1.08)
+        .to(cards[0], { y: -610, x: 120, rotate: 8, scale: 1.02, duration: 1.15 }, 1.35)
+        .to(cards[1], { x: 0, y: 0, rotate: -4, scale: 1, zIndex: 5, duration: 1.1 }, 1.35)
+        .to(cards[2], { x: 22, y: 16, rotate: 3, scale: 0.96, duration: 1.1 }, 1.35)
+        .to(cards[3], { x: 10, y: 24, rotate: 1, scale: 0.94, duration: 1.1 }, 1.35)
+        .to(cards[1], { y: -600, x: -84, rotate: -8, scale: 1.02, duration: 1.15 }, 2.65)
+        .to(cards[2], { x: 0, y: 0, rotate: 2, scale: 1, zIndex: 6, duration: 1.1 }, 2.65)
+        .to(cards[3], { x: -8, y: 16, rotate: -1, scale: 0.96, duration: 1.1 }, 2.65)
+        .to(cards[2], { y: -605, x: 74, rotate: 7, scale: 1.02, duration: 1.15 }, 3.95)
+        .to(cards[3], { x: 0, y: 0, rotate: -2, scale: 1, zIndex: 7, duration: 1.1 }, 3.95)
+        .to(stackRef.current, { y: -486, scale: 0.99, duration: 0.7 }, 5.15);
+
+      gsap.to(".clouds-drift", {
+        x: -300,
+        repeat: -1,
+        yoyo: true,
+        duration: 20,
+        ease: "linear",
+      });
+
+      gsap.to(".flower-bob", {
+        y: -15,
+        repeat: -1,
+        yoyo: true,
+        duration: 2.5,
+        ease: "sine.inOut",
+      });
+    }, pageRef);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <div
-      ref={containerRef}
-      className="w-[1440px] h-screen mx-auto overflow-y-auto overflow-x-hidden"
-      style={{ scrollBehavior: "smooth" }}
-    >
-      {/* Tall scroll spacer */}
-      <div style={{ height: "5000px", position: "relative" }}>
-        {/* Sticky viewport */}
-        <div
-          className="sticky top-0 w-[1440px] h-[838px] overflow-hidden"
-          style={{ background: "#FFF3B7" }}
-        >
-          {/* Layer 1: Background balloons/clouds - slowest parallax */}
-          <motion.div
-            className="absolute w-[1586.242px] h-[2916px] left-[-80px]"
-            style={{ y: bgY }}
-          >
+    <main ref={pageRef} className="portfolio-scroll-page">
+      <section ref={pinRef} className="portfolio-pin-section" aria-label="Scroll-driven portfolio case study">
+        <div ref={stageRef} className="portfolio-stage">
+          <div ref={bgRef} className="absolute w-[1586.242px] h-[2916px] left-[-80px]">
             <Wireframe7BgOnly />
-          </motion.div>
+          </div>
 
-          {/* Layer 2: Hero section - moves up with scroll */}
-          <motion.div className="absolute inset-0" style={{ y: heroY }}>
-            {/* Yellow header background */}
+          <div ref={heroRef} className="absolute inset-0">
             <div className="absolute bg-[#fdcb40] h-[838px] left-0 top-0 w-[1440px]" />
-            
-            {/* Clouds with continuous drift animation */}
             <div className="absolute h-[499px] left-[16.27px] overflow-clip top-[16px] w-[1440px]">
               <CloudsLayer />
             </div>
-            
-            {/* Pink ellipse */}
             <div className="absolute h-[281px] left-[606.5px] top-[481.5px] w-[763px]">
               <PinkEllipse />
             </div>
-            
-            {/* Yellow ellipse */}
             <div className="-translate-x-1/2 absolute h-[183.405px] left-1/2 top-[652px] w-[498px]">
               <YellowEllipse />
             </div>
-            
-            {/* Blocks - behind polygon */}
             <div className="absolute h-[609px] left-[221px] top-[121px] w-[270.846px] z-[1]">
               <BlocksAnimated />
             </div>
-
-            {/* Flower - bobbing animation, behind polygon */}
             <div className="absolute h-[338.5px] left-[905px] top-[374px] w-[234.293px] z-[2]">
-              <motion.div
-                animate={{ y: [0, -15, 0] }}
-                transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                className="size-full"
-              >
+              <div className="flower-bob size-full">
                 <FlowerComponent />
-              </motion.div>
+              </div>
             </div>
-
-            {/* Character + cat layer - behind polygon */}
             <div className="absolute inset-0 z-[3]">
               <CharacterLayer />
             </div>
-
-            {/* Yellow polygon - in front of blocks/flower/character */}
             <div className="-translate-x-1/2 absolute h-[431px] left-1/2 top-[407px] w-[1440px] z-[4]">
               <YellowPolygon />
             </div>
-          </motion.div>
+          </div>
 
-          {/* Orange triangles decoration */}
-          <motion.div
-            className="absolute h-[223.866px] left-[1029px] top-[181px] w-[215px] z-[11]"
-            style={{ y: heroY, opacity: heroOpacity }}
-          >
+          <div ref={orangeRef} className="absolute h-[223.866px] left-[1029px] top-[181px] w-[215px] z-[11]">
             <Group39 />
-          </motion.div>
+          </div>
 
-          {/* Cards layer - pinned stack reveal that keeps the original card design intact */}
-          <motion.div
-            className="absolute left-[492px] top-[631px] h-[380px] w-[440px] z-[10]"
-            style={{
-              y: cardStackY,
-              scale: cardStackScale,
-              perspective: 1400,
-              transformStyle: "preserve-3d",
-              transformOrigin: "50% 50%",
-            }}
-          >
-            <motion.div
-              className="absolute inset-0 flex items-center justify-center"
-              style={{
-                x: card4X,
-                y: card4Y,
-                rotate: card4RotateZ,
-                opacity: card4Opacity,
-                zIndex: 1,
-                transformStyle: "preserve-3d",
-              }}
-            >
+          <div ref={stackRef} className="absolute left-[492px] top-[631px] h-[380px] w-[440px] z-[10]">
+            <div ref={(node) => { if (node) cardsRef.current[3] = node; }} className="absolute inset-0 flex items-center justify-center">
               <CardWhite />
-            </motion.div>
-
-            <motion.div
-              className="absolute inset-0 flex items-center justify-center"
-              style={{
-                x: card3X,
-                y: card3Y,
-                rotate: card3RotateZ,
-                rotateY: card3RotateY,
-                scale: card3Scale,
-                opacity: card3Opacity,
-                zIndex: 2,
-                transformOrigin: "50% 50%",
-                transformStyle: "preserve-3d",
-                backfaceVisibility: "hidden",
-              }}
-            >
-              <motion.div style={{ opacity: card3FlipOpacity }}>
-                <CardBlue />
-              </motion.div>
-            </motion.div>
-
-            <motion.div
-              className="absolute inset-0 flex items-center justify-center"
-              style={{
-                x: card2X,
-                y: card2Y,
-                rotate: card2RotateZ,
-                rotateY: card2RotateY,
-                scale: card2Scale,
-                opacity: card2Opacity,
-                zIndex: 3,
-                transformOrigin: "50% 50%",
-                transformStyle: "preserve-3d",
-                backfaceVisibility: "hidden",
-              }}
-            >
+            </div>
+            <div ref={(node) => { if (node) cardsRef.current[2] = node; }} className="absolute inset-0 flex items-center justify-center">
+              <CardBlue />
+            </div>
+            <div ref={(node) => { if (node) cardsRef.current[1] = node; }} className="absolute inset-0 flex items-center justify-center">
               <CardPink />
-            </motion.div>
-
-            <motion.div
-              className="absolute inset-0 flex items-center justify-center"
-              style={{
-                rotateY: card1RotateY,
-                rotate: card1RotateZ,
-                opacity: card1Opacity,
-                zIndex: 4,
-                transformOrigin: "50% 50%",
-                transformStyle: "preserve-3d",
-                backfaceVisibility: "hidden",
-              }}
-            >
+            </div>
+            <div ref={(node) => { if (node) cardsRef.current[0] = node; }} className="absolute inset-0 flex items-center justify-center">
               <CardRed />
-            </motion.div>
-
-            <motion.div
-              aria-hidden="true"
-              className="absolute inset-0 rounded-[20px]"
-              style={{
-                opacity: stackOpacity,
-                boxShadow: "0 28px 70px rgba(48, 23, 51, 0.16)",
-                zIndex: 0,
-              }}
-            />
-          </motion.div>
+            </div>
+            <div aria-hidden="true" className="absolute inset-0 rounded-[20px] shadow-[0_28px_70px_rgba(48,23,51,0.16)] -z-10" />
+          </div>
         </div>
-      </div>
-    </div>
+      </section>
+
+      <section className="case-study-detail" aria-label="Case study details">
+        <p>Case Study</p>
+        <h1>Building Healthcare AI at Innovaccer</h1>
+        <div className="case-study-detail-grid">
+          <article>
+            <h2>Context</h2>
+            <p>Placeholder space for the full narrative after the pinned card reveal finishes.</p>
+          </article>
+          <article>
+            <h2>Role</h2>
+            <p>Associate Product Designer shaping intelligent workflows for care teams.</p>
+          </article>
+          <article>
+            <h2>Outcome</h2>
+            <p>Detailed metrics, visuals, and process notes can continue in a standard scrolling layout.</p>
+          </article>
+        </div>
+      </section>
+    </main>
   );
 }
-
 // ===== Sub-components built from Wireframe3-3 SVG paths =====
 // We import from the Wireframe3-3 svg paths
 import svgPaths from "./svg-nbcum20fjz";
@@ -245,11 +187,7 @@ import Group39 from "./Group39-13-266";
 
 function CloudsLayer() {
   return (
-    <motion.div
-      className="absolute inset-0"
-      animate={{ x: [0, -300, 0] }}
-      transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-    >
+    <div className="clouds-drift absolute inset-0">
       <div className="absolute inset-[0_32.89%_75.95%_49.64%]">
         <svg className="absolute block inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 251.629 120">
           <path d={svgPaths.p27619e00} fill="white" />
@@ -265,7 +203,7 @@ function CloudsLayer() {
           <path d={svgPaths.p27619e00} fill="white" />
         </svg>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -276,42 +214,12 @@ function BlocksAnimated() {
       <div className="absolute bg-[#ffc5c9] inset-[65.35%_0_0_9.6%]" />
 
       {/* Red block - drops onto pink with rotation then settles */}
-      <motion.div
-        className="absolute inset-[40.79%_13.42%_34.54%_22.34%]"
-        initial={{ y: -50, rotate: 0, opacity: 0 }}
-        animate={{
-          y: [null, 0, 0],
-          rotate: [null, 10.38, 0.38],
-          opacity: [null, 1, 1],
-        }}
-        transition={{
-          duration: 1,
-          delay: 0.4,
-          times: [0, 0.5, 1],
-          ease: "easeOut",
-          opacity: { duration: 0.01, delay: 0.4 },
-        }}
-      >
+      <div className="hero-block-red absolute inset-[40.79%_13.42%_34.54%_22.34%]">
         <div className="bg-[#ff2700] size-full" />
-      </motion.div>
+      </div>
 
       {/* Purple triangle - drops onto red with rotation then settles */}
-      <motion.div
-        className="absolute inset-[16.02%_25.62%_50.83%_-0.17%]"
-        initial={{ y: -100, rotate: 0, opacity: 0 }}
-        animate={{
-          y: [null, 0, 0],
-          rotate: [null, -12.54, -0.26],
-          opacity: [null, 1, 1],
-        }}
-        transition={{
-          duration: 1,
-          delay: 1.2,
-          times: [0, 0.5, 1],
-          ease: "easeOut",
-          opacity: { duration: 0.01, delay: 1.2 },
-        }}
-      >
+      <div className="hero-block-triangle absolute inset-[16.02%_25.62%_50.83%_-0.17%]">
         <div className="relative size-full">
           <div className="absolute bottom-1/4 left-[6.7%] right-[6.7%] top-0">
             <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 174.071 150.75">
@@ -319,7 +227,7 @@ function BlocksAnimated() {
             </svg>
           </div>
         </div>
-      </motion.div>
+      </div>
     </>
   );
 }
@@ -471,7 +379,8 @@ function CardRed() {
   return (
     <div className="bg-[#fe4401] content-stretch flex h-[380px] items-start justify-center py-[16px] rounded-[20px] w-[440px]">
       <div className="font-['Robuck:Rounded',sans-serif] leading-[0] not-italic relative shrink-0 text-[0px] text-center text-white w-[396px] whitespace-pre-wrap">
-        <p className="leading-[normal] mb-0 text-[48px]">Associate product designer</p>
+        <p className="leading-[normal] mb-0 text-[48px]">ASSOCIATE PRODUCT
+DESIGNER</p>
         <p className="leading-[normal] mb-0 text-[48px]">​</p>
         <p className="font-['ABC_Diatype_Rounded_Unlicensed_Trial:Regular',sans-serif] leading-[normal] text-[24px]">Building Healthcare AI at Innovaccer — designing intelligent systems that empower care teams and improve patient outcomes.</p>
       </div>
