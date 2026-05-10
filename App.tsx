@@ -237,11 +237,11 @@ export default function App() {
 
 // ===== Sub-components built from Wireframe3-3 SVG paths =====
 // We import from the Wireframe3-3 svg paths
-import svgPaths from "../imports/Wireframe3-3/svg-nbcum20fjz";
-import svgPathsW7 from "../imports/Wireframe7-1/svg-o04jntdhz2";
-import imgReadingEyeglasses from "../imports/Wireframe3-3/5b74b62fe744bfd03cdbcbe33028b5687cddb509.png";
-import Group40 from "../imports/Group40-1/Group40";
-import Group39 from "../imports/Group39-1/Group39-13-266";
+import svgPaths from "./svg-nbcum20fjz";
+import svgPathsW7 from "./svg-o04jntdhz2";
+import imgReadingEyeglasses from "./5b74b62fe744bfd03cdbcbe33028b5687cddb509.png";
+import Group40 from "./Group40";
+import Group39 from "./Group39-13-266";
 
 function CloudsLayer() {
   return (
