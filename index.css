@@ -191,7 +191,7 @@ a {
 @keyframes hero-flower-sway {
   from { transform: translateY(0) rotate(-1.6deg); }
   to { transform: translateY(-9px) rotate(1.8deg); }
-
+}
 @keyframes hero-character-enter {
   0% { opacity: 0; transform: translateY(42px) scale(.94); }
   72% { opacity: 1; transform: translateY(-4px) scale(1.015); }
