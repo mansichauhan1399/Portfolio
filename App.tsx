@@ -1,701 +1,308 @@
-import { useRef } from "react";
-import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
+
+type StudyCard = {
+  eyebrow: string;
+  title: string;
+  body: string;
+  color: string;
+  accent: string;
+  rotation: number;
+};
+
+const cards: StudyCard[] = [
+  {
+    eyebrow: "01 / Discovery",
+    title: "Start with a tiny spark",
+    body: "A playful audit turned fuzzy ideas into a confident story arc for the case study.",
+    color: "#ff6f61",
+    accent: "#ffe7db",
+    rotation: -4,
+  },
+  {
+    eyebrow: "02 / System",
+    title: "Stack the proof points",
+    body: "Research, metrics, and sketches stay layered until the scroll invites each one forward.",
+    color: "#573dde",
+    accent: "#dfdcff",
+    rotation: 3,
+  },
+  {
+    eyebrow: "03 / Prototype",
+    title: "Make movement useful",
+    body: "Pinned progression lets readers linger without losing their place in the narrative.",
+    color: "#016dff",
+    accent: "#d8ecff",
+    rotation: -2,
+  },
+  {
+    eyebrow: "04 / Outcome",
+    title: "Land on the takeaway",
+    body: "The final card opens the door to a normal long-form case study with room for detail.",
+    color: "#05b9aa",
+    accent: "#d9fff7",
+    rotation: 4,
+  },
+];
+
+const contentBlocks = [
+  {
+    label: "Problem",
+    heading: "Visitors needed a faster way to understand the project value.",
+    copy: "The original flow buried the strongest evidence. This concept uses a tactile card reveal to preview the strategic moments before the full write-up begins.",
+  },
+  {
+    label: "Approach",
+    heading: "Pin the key sequence, then return control to the reader.",
+    copy: "GSAP ScrollTrigger keeps the card section in place while cards ease forward one by one. Once the sequence finishes, the page continues naturally into traditional case-study content.",
+  },
+  {
+    label: "Result",
+    heading: "A memorable introduction that still respects scannability.",
+    copy: "The stack, overlaps, rotations, and parallax objects add personality while responsive layout rules keep the experience practical across screen sizes.",
+  },
+];
 
 export default function App() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ container: containerRef });
-  const shouldReduceMotion = useReducedMotion();
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 130,
-    damping: 28,
-    mass: 0.18,
-    restDelta: 0.001,
-  });
-  const cardProgress = shouldReduceMotion ? scrollYProgress : smoothProgress;
+  const pageRef = useRef<HTMLDivElement>(null);
+  const pinRef = useRef<HTMLElement>(null);
+  const stackRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<HTMLDivElement[]>([]);
+  const decorRefs = useRef<HTMLDivElement[]>([]);
 
-  // Hero layer moves up fast (1x speed)
-  const heroY = useTransform(scrollYProgress, [0, 0.2], [0, -840]);
-  
-  // Background (clouds/balloons) moves up slower (parallax)
-  const bgY = useTransform(scrollYProgress, [0, 1], [888, -1568]);
-  
-  // Selected-work cards: one pinned, layered stack that reveals through scroll.
-  // The first card enters alone, flips away, then exposes the stacked cards below.
-  const cardStackY = useTransform(cardProgress, [0, 0.13, 0.16], [170, -486, -486]);
-  const cardStackScale = useTransform(cardProgress, [0, 0.13, 0.82], [0.98, 1, 0.99]);
+  useEffect(() => {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  const card1RotateY = useTransform(
-    cardProgress,
-    [0.16, 0.25, 0.36],
-    shouldReduceMotion ? [0, 0, 0] : [0, -92, -180],
-  );
-  const card1RotateZ = useTransform(cardProgress, [0.16, 0.25, 0.36], shouldReduceMotion ? [0, 0, 0] : [0, -5, -10]);
-  const card1Opacity = useTransform(cardProgress, shouldReduceMotion ? [0.30, 0.34] : [0.32, 0.38], [1, 0]);
+    const ctx = gsap.context(() => {
+      gsap.set(cardRefs.current, {
+        transformPerspective: 1200,
+        transformOrigin: "50% 56%",
+        willChange: "transform, opacity",
+      });
 
-  const stackOpacity = useTransform(cardProgress, shouldReduceMotion ? [0.22, 0.30] : [0.25, 0.34], [0, 1]);
-  const card2X = useTransform(cardProgress, [0.28, 0.40, 0.60], [0, -22, -54]);
-  const card2Y = useTransform(cardProgress, [0.28, 0.40, 0.60], [0, 8, 16]);
-  const card2RotateZ = useTransform(cardProgress, [0.28, 0.40, 0.60], [0, -3, -7]);
-  const card2Scale = useTransform(cardProgress, [0.28, 0.60], [0.99, 0.97]);
-  const card2RotateY = useTransform(
-    cardProgress,
-    [0.42, 0.52, 0.64],
-    shouldReduceMotion ? [0, 0, 0] : [0, -94, -180],
-  );
-  const card2Opacity = useTransform(cardProgress, [0.28, 0.34, 0.60, 0.66], [0, 1, 1, 0]);
+      cards.forEach((card, index) => {
+        const el = cardRefs.current[index];
+        gsap.set(el, {
+          xPercent: index === 0 ? 0 : index % 2 === 0 ? 7 : -7,
+          yPercent: index === 0 ? 46 : 20 + index * 7,
+          zIndex: cards.length - index,
+          rotate: index === 0 ? -10 : card.rotation,
+          rotateY: index === 0 ? -16 : 0,
+          scale: index === 0 ? 0.92 : 0.88 - index * 0.025,
+          opacity: index === 0 ? 0 : 0,
+        });
+      });
 
-  const card3Opacity = useTransform(cardProgress, [0.46, 0.54], [0, 1]);
-  const card3X = useTransform(cardProgress, [0.46, 0.64, 0.82], [0, 26, 62]);
-  const card3Y = useTransform(cardProgress, [0.46, 0.64, 0.82], [0, 13, 22]);
-  const card3RotateZ = useTransform(cardProgress, [0.46, 0.64, 0.82], [0, 3, 7]);
-  const card3Scale = useTransform(cardProgress, [0.46, 0.82], [0.98, 0.955]);
-  const card3RotateY = useTransform(
-    cardProgress,
-    [0.66, 0.76, 0.88],
-    shouldReduceMotion ? [0, 0, 0] : [0, -94, -180],
-  );
-  const card3FlipOpacity = useTransform(cardProgress, [0.82, 0.89], [1, 0]);
+      const timeline = gsap.timeline({
+        defaults: {
+          ease: reduceMotion ? "none" : "power3.out",
+          duration: reduceMotion ? 0.01 : 0.85,
+        },
+        scrollTrigger: {
+          trigger: pinRef.current,
+          start: "top top",
+          end: () => `+=${Math.max(window.innerHeight * 3.2, 2200)}`,
+          scrub: reduceMotion ? true : 0.8,
+          pin: true,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        },
+      });
 
-  const card4Opacity = useTransform(cardProgress, [0.72, 0.82], [0, 1]);
-  const card4X = useTransform(cardProgress, [0.72, 0.94], [0, -12]);
-  const card4Y = useTransform(cardProgress, [0.72, 0.94], [0, 10]);
-  const card4RotateZ = useTransform(cardProgress, [0.72, 0.94], [0, -2]);
+      timeline
+        .to(cardRefs.current[0], {
+          opacity: 1,
+          yPercent: 0,
+          rotate: cards[0].rotation,
+          rotateY: 0,
+          scale: 1,
+        })
+        .to(
+          cardRefs.current.slice(1),
+          {
+            opacity: 1,
+            yPercent: (index) => 10 + index * 6,
+            xPercent: (index) => (index % 2 === 0 ? -5 : 5),
+            scale: (index) => 0.94 - index * 0.035,
+            stagger: 0.08,
+          },
+          ">-0.2",
+        );
 
-  // Clouds in hero section drift continuously (handled by CSS animation below)
-  // Orange decoration opacity
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
+      cards.slice(1).forEach((_, index) => {
+        const cardIndex = index + 1;
+        timeline
+          .to(cardRefs.current[cardIndex], {
+            yPercent: -4 + index * 2,
+            xPercent: index % 2 === 0 ? 3 : -3,
+            rotate: cards[cardIndex].rotation,
+            scale: 1 - index * 0.015,
+            zIndex: cards.length + cardIndex,
+          })
+          .to(
+            cardRefs.current.slice(0, cardIndex),
+            {
+              yPercent: (olderIndex) => 10 + olderIndex * 5,
+              xPercent: (olderIndex) => (olderIndex % 2 === 0 ? -8 : 8),
+              rotate: (olderIndex) => cards[olderIndex].rotation * 0.7,
+              scale: (olderIndex) => 0.9 - olderIndex * 0.025,
+              opacity: 0.82,
+            },
+            "<",
+          );
+      });
+
+      timeline.to(stackRef.current, { yPercent: -6, scale: 0.98, duration: 0.7 });
+
+      decorRefs.current.forEach((el, index) => {
+        gsap.to(el, {
+          y: index % 2 === 0 ? -90 : 80,
+          x: index === 1 ? 34 : index === 2 ? -24 : 12,
+          rotate: index % 2 === 0 ? 10 : -12,
+          ease: "none",
+          scrollTrigger: {
+            trigger: pinRef.current,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: reduceMotion ? true : 1.2,
+          },
+        });
+      });
+    }, pageRef);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <div
-      ref={containerRef}
-      className="w-[1440px] h-screen mx-auto overflow-y-auto overflow-x-hidden"
-      style={{ scrollBehavior: "smooth" }}
-    >
-      {/* Tall scroll spacer */}
-      <div style={{ height: "5000px", position: "relative" }}>
-        {/* Sticky viewport */}
-        <div
-          className="sticky top-0 w-[1440px] h-[838px] overflow-hidden"
-          style={{ background: "#FFF3B7" }}
-        >
-          {/* Layer 1: Background balloons/clouds - slowest parallax */}
-          <motion.div
-            className="absolute w-[1586.242px] h-[2916px] left-[-80px]"
-            style={{ y: bgY }}
-          >
-            <Wireframe7BgOnly />
-          </motion.div>
+    <main ref={pageRef} className="portfolio-page">
+      <HeroSection />
 
-          {/* Layer 2: Hero section - moves up with scroll */}
-          <motion.div className="absolute inset-0" style={{ y: heroY }}>
-            {/* Yellow header background */}
-            <div className="absolute bg-[#fdcb40] h-[838px] left-0 top-0 w-[1440px]" />
-            
-            {/* Clouds with continuous drift animation */}
-            <div className="absolute h-[499px] left-[16.27px] overflow-clip top-[16px] w-[1440px]">
-              <CloudsLayer />
-            </div>
-            
-            {/* Pink ellipse */}
-            <div className="absolute h-[281px] left-[606.5px] top-[481.5px] w-[763px]">
-              <PinkEllipse />
-            </div>
-            
-            {/* Yellow ellipse */}
-            <div className="-translate-x-1/2 absolute h-[183.405px] left-1/2 top-[652px] w-[498px]">
-              <YellowEllipse />
-            </div>
-            
-            {/* Blocks - behind polygon */}
-            <div className="absolute h-[609px] left-[221px] top-[121px] w-[270.846px] z-[1]">
-              <BlocksAnimated />
-            </div>
+      <section ref={pinRef} className="card-pin-section" aria-label="Scroll driven case study highlights">
+        <div className="pin-copy">
+          <p className="section-kicker">Selected case study</p>
+          <h2>Scroll to pull each idea from the stack.</h2>
+          <p>
+            The section pins while a playful deck previews the project phases. The cards rotate,
+            overlap, and ease forward before the long-form story resumes.
+          </p>
+        </div>
 
-            {/* Flower - bobbing animation, behind polygon */}
-            <div className="absolute h-[338.5px] left-[905px] top-[374px] w-[234.293px] z-[2]">
-              <motion.div
-                animate={{ y: [0, -15, 0] }}
-                transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                className="size-full"
-              >
-                <FlowerComponent />
-              </motion.div>
-            </div>
+        <DecorativeObjects decorRefs={decorRefs} />
 
-            {/* Character + cat layer - behind polygon */}
-            <div className="absolute inset-0 z-[3]">
-              <CharacterLayer />
-            </div>
-
-            {/* Yellow polygon - in front of blocks/flower/character */}
-            <div className="-translate-x-1/2 absolute h-[431px] left-1/2 top-[407px] w-[1440px] z-[4]">
-              <YellowPolygon />
-            </div>
-          </motion.div>
-
-          {/* Orange triangles decoration */}
-          <motion.div
-            className="absolute h-[223.866px] left-[1029px] top-[181px] w-[215px] z-[11]"
-            style={{ y: heroY, opacity: heroOpacity }}
-          >
-            <Group39 />
-          </motion.div>
-
-          {/* Cards layer - pinned stack reveal that keeps the original card design intact */}
-          <motion.div
-            className="absolute left-[492px] top-[631px] h-[380px] w-[440px] z-[10]"
-            style={{
-              y: cardStackY,
-              scale: cardStackScale,
-              perspective: 1400,
-              transformStyle: "preserve-3d",
-              transformOrigin: "50% 50%",
-            }}
-          >
-            <motion.div
-              className="absolute inset-0 flex items-center justify-center"
-              style={{
-                x: card4X,
-                y: card4Y,
-                rotate: card4RotateZ,
-                opacity: card4Opacity,
-                zIndex: 1,
-                transformStyle: "preserve-3d",
-              }}
-            >
-              <CardWhite />
-            </motion.div>
-
-            <motion.div
-              className="absolute inset-0 flex items-center justify-center"
-              style={{
-                x: card3X,
-                y: card3Y,
-                rotate: card3RotateZ,
-                rotateY: card3RotateY,
-                scale: card3Scale,
-                opacity: card3Opacity,
-                zIndex: 2,
-                transformOrigin: "50% 50%",
-                transformStyle: "preserve-3d",
-                backfaceVisibility: "hidden",
-              }}
-            >
-              <motion.div style={{ opacity: card3FlipOpacity }}>
-                <CardBlue />
-              </motion.div>
-            </motion.div>
-
-            <motion.div
-              className="absolute inset-0 flex items-center justify-center"
-              style={{
-                x: card2X,
-                y: card2Y,
-                rotate: card2RotateZ,
-                rotateY: card2RotateY,
-                scale: card2Scale,
-                opacity: card2Opacity,
-                zIndex: 3,
-                transformOrigin: "50% 50%",
-                transformStyle: "preserve-3d",
-                backfaceVisibility: "hidden",
-              }}
-            >
-              <CardPink />
-            </motion.div>
-
-            <motion.div
-              className="absolute inset-0 flex items-center justify-center"
-              style={{
-                rotateY: card1RotateY,
-                rotate: card1RotateZ,
-                opacity: card1Opacity,
-                zIndex: 4,
-                transformOrigin: "50% 50%",
-                transformStyle: "preserve-3d",
-                backfaceVisibility: "hidden",
-              }}
-            >
-              <CardRed />
-            </motion.div>
-
-            <motion.div
-              aria-hidden="true"
-              className="absolute inset-0 rounded-[20px]"
-              style={{
-                opacity: stackOpacity,
-                boxShadow: "0 28px 70px rgba(48, 23, 51, 0.16)",
-                zIndex: 0,
+        <div ref={stackRef} className="case-card-stack" aria-live="polite">
+          {cards.map((card, index) => (
+            <CaseStudyCard
+              key={card.title}
+              card={card}
+              index={index}
+              setRef={(node) => {
+                if (node) cardRefs.current[index] = node;
               }}
             />
-          </motion.div>
+          ))}
         </div>
+      </section>
+
+      <CaseStudyContent />
+    </main>
+  );
+}
+
+function HeroSection() {
+  return (
+    <section className="hero-section">
+      <div className="hero-cloud hero-cloud-one" />
+      <div className="hero-cloud hero-cloud-two" />
+      <div className="hero-grid" />
+      <div className="hero-copy">
+        <p className="section-kicker">Portfolio concept</p>
+        <h1>A cheerful case study intro with a scroll-powered card stack.</h1>
+        <p>
+          Inspired by Maxima Therapy&apos;s bright, characterful energy: bold shapes, friendly copy,
+          and motion that makes the page feel hand-built.
+        </p>
+        <a href="#case-study-content" className="hero-link">
+          Skip to the case study
+        </a>
       </div>
+      <div className="hero-figure" aria-hidden="true">
+        <div className="hero-face">
+          <span />
+          <span />
+        </div>
+        <div className="hero-smile" />
+      </div>
+    </section>
+  );
+}
+
+function DecorativeObjects({ decorRefs }: { decorRefs: React.MutableRefObject<HTMLDivElement[]> }) {
+  return (
+    <div className="decor-layer" aria-hidden="true">
+      {["circle", "squiggle", "triangle", "pill"].map((shape, index) => (
+        <div
+          key={shape}
+          ref={(node) => {
+            if (node) decorRefs.current[index] = node;
+          }}
+          className={`decor-object decor-${shape}`}
+        />
+      ))}
     </div>
   );
 }
 
-// ===== Sub-components built from Wireframe3-3 SVG paths =====
-// We import from the Wireframe3-3 svg paths
-import svgPaths from "./svg-nbcum20fjz";
-import svgPathsW7 from "./svg-o04jntdhz2";
-import imgReadingEyeglasses from "./5b74b62fe744bfd03cdbcbe33028b5687cddb509.png";
-import Group40 from "./Group40";
-import Group39 from "./Group39-13-266";
-
-function CloudsLayer() {
+function CaseStudyCard({
+  card,
+  index,
+  setRef,
+}: {
+  card: StudyCard;
+  index: number;
+  setRef: (node: HTMLDivElement | null) => void;
+}) {
   return (
-    <motion.div
-      className="absolute inset-0"
-      animate={{ x: [0, -300, 0] }}
-      transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-    >
-      <div className="absolute inset-[0_32.89%_75.95%_49.64%]">
-        <svg className="absolute block inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 251.629 120">
-          <path d={svgPaths.p27619e00} fill="white" />
-        </svg>
+    <article ref={setRef} className="case-card" style={{ "--card-color": card.color, "--card-accent": card.accent } as React.CSSProperties}>
+      <div className="card-visual" aria-hidden="true">
+        <PlaceholderArt index={index} />
       </div>
-      <div className="absolute inset-[35.07%_-17.78%_40.88%_100.3%]">
-        <svg className="absolute block inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 251.629 120">
-          <path d={svgPaths.p8ca6a80} fill="white" />
-        </svg>
+      <div className="card-copy">
+        <p>{card.eyebrow}</p>
+        <h3>{card.title}</h3>
+        <span>{card.body}</span>
       </div>
-      <div className="absolute inset-[75.95%_64.75%_0_17.78%]">
-        <svg className="absolute block inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 251.629 120">
-          <path d={svgPaths.p27619e00} fill="white" />
-        </svg>
-      </div>
-    </motion.div>
+    </article>
   );
 }
 
-function BlocksAnimated() {
+function PlaceholderArt({ index }: { index: number }) {
   return (
-    <>
-      {/* Pink block - static, always in place */}
-      <div className="absolute bg-[#ffc5c9] inset-[65.35%_0_0_9.6%]" />
-
-      {/* Red block - drops onto pink with rotation then settles */}
-      <motion.div
-        className="absolute inset-[40.79%_13.42%_34.54%_22.34%]"
-        initial={{ y: -50, rotate: 0, opacity: 0 }}
-        animate={{
-          y: [null, 0, 0],
-          rotate: [null, 10.38, 0.38],
-          opacity: [null, 1, 1],
-        }}
-        transition={{
-          duration: 1,
-          delay: 0.4,
-          times: [0, 0.5, 1],
-          ease: "easeOut",
-          opacity: { duration: 0.01, delay: 0.4 },
-        }}
-      >
-        <div className="bg-[#ff2700] size-full" />
-      </motion.div>
-
-      {/* Purple triangle - drops onto red with rotation then settles */}
-      <motion.div
-        className="absolute inset-[16.02%_25.62%_50.83%_-0.17%]"
-        initial={{ y: -100, rotate: 0, opacity: 0 }}
-        animate={{
-          y: [null, 0, 0],
-          rotate: [null, -12.54, -0.26],
-          opacity: [null, 1, 1],
-        }}
-        transition={{
-          duration: 1,
-          delay: 1.2,
-          times: [0, 0.5, 1],
-          ease: "easeOut",
-          opacity: { duration: 0.01, delay: 1.2 },
-        }}
-      >
-        <div className="relative size-full">
-          <div className="absolute bottom-1/4 left-[6.7%] right-[6.7%] top-0">
-            <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 174.071 150.75">
-              <path d={svgPaths.p15baddb0} fill="#573DDE" />
-            </svg>
-          </div>
-        </div>
-      </motion.div>
-    </>
-  );
-}
-
-function PinkEllipse() {
-  return (
-    <svg className="absolute block inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 763 281">
-      <path d={svgPaths.p3f049700} fill="#FFC5C9" />
+    <svg viewBox="0 0 240 160" role="img" aria-label="Placeholder project visual">
+      <rect x="12" y="16" width="216" height="128" rx="28" fill="var(--card-accent)" />
+      <circle cx={index % 2 === 0 ? 74 : 166} cy="72" r="32" fill="var(--card-color)" />
+      <path d="M54 116 C92 86, 132 148, 188 98" fill="none" stroke="#1f1b2d" strokeWidth="10" strokeLinecap="round" />
+      <path d="M158 42 l34 18 -34 18z" fill="#fdcb40" />
     </svg>
   );
 }
 
-function YellowEllipse() {
+function CaseStudyContent() {
   return (
-    <svg className="absolute block inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 498 183.405">
-      <path d={svgPaths.p17c6aff0} fill="#FFF386" />
-    </svg>
-  );
-}
-
-function YellowPolygon() {
-  return (
-    <svg className="absolute block inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 1440 431">
-      <path d="M0 0L720 431L1440 0V431H0V0Z" fill="#FFF3B7" />
-    </svg>
-  );
-}
-
-function FlowerComponent() {
-  return (
-    <div className="relative size-full">
-      <div className="absolute inset-[2.36%_0_-2.36%_0]">
-        <svg className="absolute block inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 234.293 338.5">
-          <g>
-            <path d={svgPaths.p2214e680} fill="#05D7D2" />
-            <path d={svgPaths.p1804f400} fill="#FFC502" />
-            <rect fill="#573DDE" height="150.444" width="25.2848" x="104.709" y="188.056" />
-            <path d={svgPaths.p12caea00} fill="#FF2700" />
-          </g>
-        </svg>
+    <section id="case-study-content" className="case-study-content">
+      <p className="section-kicker">Full case study</p>
+      <h2>The normal content begins after the pinned reveal.</h2>
+      <div className="content-grid">
+        {contentBlocks.map((block) => (
+          <article key={block.label} className="content-card">
+            <p>{block.label}</p>
+            <h3>{block.heading}</h3>
+            <span>{block.copy}</span>
+          </article>
+        ))}
       </div>
-    </div>
-  );
-}
-
-function CharacterLayer() {
-  return (
-    <>
-      {/* Character (Group3 content) */}
-      <div className="absolute flex h-[410.353px] items-center justify-center left-[481px] top-[279px] w-[435.824px]">
-        <div className="flex-none rotate-[1.01deg]">
-          <div className="h-[402.829px] relative w-[428.764px]">
-            <div className="absolute inset-[-0.1%_0_0_0]">
-              <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 428.764 403.25">
-                <g>
-                  <path d={svgPaths.p2ab74100} fill="#016DFF" />
-                  <path d={svgPaths.p2e677a00} fill="#FCD9C4" />
-                  <path d={svgPaths.p1c091780} fill="#016DFF" stroke="#016DFF" strokeWidth="0.841352" />
-                  <path d={svgPaths.p2581a780} fill="#016DFF" stroke="#016DFF" strokeWidth="0.841352" />
-                </g>
-              </svg>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* Glasses band */}
-      <div className="absolute flex h-[46.765px] items-center justify-center left-[603.18px] top-[449.25px] w-[190.463px]">
-        <div className="flex-none rotate-[1.01deg]">
-          <div className="h-[43.415px] relative w-[189.725px]">
-            <div className="absolute inset-[-6.78%_-1.55%_-0.29%_-1.55%]">
-              <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 195.615 46.4837">
-                <g>
-                  <path d={svgPaths.p3c997800} stroke="black" strokeWidth="0.841352" />
-                  <path d={svgPaths.p1ddeed00} stroke="black" strokeLinecap="round" strokeWidth="5.88947" />
-                </g>
-              </svg>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* Glasses image */}
-      <div className="absolute flex items-center justify-center left-[562.39px] size-[273.955px] top-[317.08px]">
-        <div className="flex-none rotate-[1.01deg]">
-          <div className="relative size-[269.233px]">
-            <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgReadingEyeglasses} />
-          </div>
-        </div>
-      </div>
-      {/* Mouth */}
-      <div className="absolute flex h-[67.348px] items-center justify-center left-[626.81px] top-[499.82px] w-[147.539px]">
-        <div className="flex-none rotate-[1.01deg]">
-          <div className="h-[64.767px] relative w-[146.416px]">
-            <svg className="absolute block inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 146.416 64.7669">
-              <g>
-                <path d={svgPaths.p644f2f0} fill="#1F1F1F" />
-                <path d={svgPaths.p134f7e80} fill="#9A2811" />
-                <path d={svgPaths.p2e50c500} fill="#FFFEFE" />
-              </g>
-            </svg>
-          </div>
-        </div>
-      </div>
-      {/* Cat (Group5) */}
-      <div className="absolute h-[308.673px] left-[541.04px] top-[90px] w-[386.036px]">
-        <div className="absolute inset-[0_0_-0.59%_0]">
-          <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 386.036 310.5">
-            <g>
-              <path d={svgPaths.p3d821a00} fill="#FCFCFC" />
-              <path d={svgPaths.p9bd8700} fill="#FCFCFC" />
-              <path d={svgPaths.p2920b300} fill="#FCFCFC" />
-              <path d={svgPaths.p971c700} fill="#FCFCFC" />
-              <path d={svgPaths.p2af86d40} fill="#FCFCFC" stroke="#FFA216" strokeWidth="4" />
-              <path d={svgPaths.p15f50ef0} fill="#FFE3E3" />
-              <path d={svgPaths.p11c64000} fill="#FFE3E3" />
-              <path d={svgPaths.p3005ec00} fill="#FEBB56" />
-              <path d={svgPaths.p3b665d00} stroke="black" strokeLinecap="round" strokeWidth="3" />
-              <path d={svgPaths.pcecaa80} fill="black" />
-              <path d={svgPaths.p85eed00} fill="black" />
-              <path d={svgPaths.p12a64d00} fill="#FFAF37" />
-              <path d={svgPaths.p8ef5500} fill="#FFAF37" />
-              <path d={svgPaths.p13633210} fill="#FFAF37" />
-              <path d={svgPaths.p3b828700} fill="#FFAF37" />
-              <path d={svgPaths.p20554b00} fill="#FFAF37" />
-              <path d={svgPaths.p52de400} fill="#FFAF37" />
-              <path d={svgPaths.p3e223300} fill="#FFAF37" />
-              <path d={svgPaths.p1102dd00} fill="#FFCB7D" />
-              <path d={svgPaths.pc138d40} fill="#FFCB7D" />
-              <path d={svgPaths.p1a30fc00} fill="#FFCB7D" />
-              <path d={svgPaths.p2f2fb940} fill="#FFCB7D" />
-              <path d={svgPaths.p2b83f070} fill="#FFAF37" />
-              <path d={svgPaths.p15c6ec00} fill="#FFAF37" />
-              <path d={svgPaths.p698c300} fill="#FFAF37" />
-              <path d={svgPaths.p251e2900} fill="#FFAF37" />
-              <path d={svgPaths.p284b2e00} fill="#FFAF37" />
-              <path d={svgPaths.p18a90180} stroke="#FFA216" strokeLinecap="round" strokeWidth="4" />
-              <path d={svgPaths.p1bd9bc80} stroke="#FFA216" strokeLinecap="round" strokeWidth="4" />
-              <path d={svgPaths.p2654f280} stroke="#FFAF37" strokeLinecap="round" strokeWidth="4" />
-              <path d={svgPaths.p3bf5cc00} fill="#FFDADA" />
-              <path d={svgPaths.p31918a80} fill="#FCFCFC" stroke="#FCFCFC" strokeLinecap="round" strokeWidth="4" />
-            </g>
-          </svg>
-        </div>
-      </div>
-    </>
-  );
-}
-
-function CardRed() {
-  return (
-    <div className="bg-[#fe4401] content-stretch flex h-[380px] items-start justify-center py-[16px] rounded-[20px] w-[440px]">
-      <div className="font-['Robuck:Rounded',sans-serif] leading-[0] not-italic relative shrink-0 text-[0px] text-center text-white w-[396px] whitespace-pre-wrap">
-        <p className="leading-[normal] mb-0 text-[48px]">Associate product designer</p>
-        <p className="leading-[normal] mb-0 text-[48px]">​</p>
-        <p className="font-['ABC_Diatype_Rounded_Unlicensed_Trial:Regular',sans-serif] leading-[normal] text-[24px]">Building Healthcare AI at Innovaccer — designing intelligent systems that empower care teams and improve patient outcomes.</p>
-      </div>
-    </div>
-  );
-}
-
-function CardPink() {
-  return (
-    <div className="bg-[#f781d4] content-stretch flex h-[380px] items-start justify-center py-[16px] relative rounded-[20px] w-[440px]">
-      <div className="font-['Robuck:Rounded',sans-serif] leading-[0] not-italic relative shrink-0 text-[#6c3089] text-[0px] text-center w-[396px] whitespace-pre-wrap">
-        <p className="leading-[normal] mb-0 text-[48px]">Project 1</p>
-        <p className="leading-[normal] mb-0 text-[48px]">​</p>
-        <p className="font-['ABC_Diatype_Rounded_Unlicensed_Trial:Regular',sans-serif] leading-[normal] text-[24px]">Placeholder</p>
-      </div>
-    </div>
-  );
-}
-
-function CardBlue() {
-  return (
-    <div className="bg-[#2668fd] content-stretch flex h-[380px] items-start justify-center py-[16px] relative rounded-[20px] w-[440px]">
-      <div className="font-['Robuck:Rounded',sans-serif] leading-[0] not-italic relative shrink-0 text-[#fdcb40] text-[0px] text-center w-[396px] whitespace-pre-wrap">
-        <p className="leading-[normal] mb-0 text-[48px]">Project 2</p>
-        <p className="leading-[normal] mb-0 text-[48px]">​</p>
-        <p className="font-['ABC_Diatype_Rounded_Unlicensed_Trial:Regular',sans-serif] leading-[normal] text-[24px]">Placeholder</p>
-      </div>
-    </div>
-  );
-}
-
-function CardWhite() {
-  return (
-    <div className="bg-white content-stretch flex h-[380px] items-start justify-center py-[16px] relative rounded-[20px] w-[440px]">
-      <div className="font-['Robuck:Rounded',sans-serif] leading-[0] not-italic relative shrink-0 text-[#fdcb40] text-[0px] text-center w-[396px] whitespace-pre-wrap">
-        <p className="leading-[normal] mb-0 text-[48px]">Project 3</p>
-        <p className="leading-[normal] mb-0 text-[48px]">​</p>
-        <p className="font-['ABC_Diatype_Rounded_Unlicensed_Trial:Regular',sans-serif] leading-[normal] text-[24px]">Placeholder</p>
-      </div>
-    </div>
-  );
-}
-
-// Background balloons/clouds from Wireframe7 SVG paths
-function Wireframe7BgOnly() {
-  return (
-    <div className="absolute inset-0">
-      <svg className="absolute block inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 1586.24 2916" xmlnsXlink="http://www.w3.org/1999/xlink">
-        <g id="Group 37">
-          <g clipPath="url(#clip0_bg)" id="Group 29">
-            <path d={svgPathsW7.p13582ea0} fill="white" />
-            <path d={svgPathsW7.p19999080} fill="white" />
-            <path d={svgPathsW7.p3edcfd80} fill="white" />
-          </g>
-          <g clipPath="url(#clip1_bg)" id="Group 9">
-            <path d={svgPathsW7.p2b8f4f80} fill="white" />
-            <path d={svgPathsW7.p34c0d500} fill="white" />
-            <path d={svgPathsW7.p329ceb00} fill="white" />
-          </g>
-          {/* Group40 balloon replaces basket-only group */}
-          {/* Orange balloon */}
-          <g>
-            <rect fill="#C95B45" height="64" rx="4" width="100" x="1145" y="1411" />
-            <line stroke="#C95B45" strokeLinecap="round" strokeWidth="4" x1="1111.68" x2="1146.91" y1="1339.91" y2="1411.32" />
-            <line stroke="#C95B45" strokeLinecap="round" strokeWidth="4" x1="1280.91" x2="1244.23" y1="1337.68" y2="1411.99" />
-            <g>
-              <path d={svgPathsW7.p3fb43100} fill="#FF8E43" />
-              <path d={svgPathsW7.p3c207f00} fill="#FF6B09" />
-              <path d={svgPathsW7.p16a24500} fill="#FF8E43" />
-              <path d={svgPathsW7.p1744ad00} fill="#FF6B09" />
-              <path d={svgPathsW7.p8f4e00} fill="#FF8E43" />
-              <path d={svgPathsW7.pbf3ad00} fill="#FF8E43" />
-              <path d={svgPathsW7.p5c61100} fill="#FF8E43" />
-              <path d={svgPathsW7.p2e204e00} fill="#FF8E43" />
-              <path d={svgPathsW7.p3940bf40} fill="#FF6B09" />
-              <path d={svgPathsW7.p19977d00} fill="#FF6B09" />
-              <path d={svgPathsW7.p14d6400} fill="#FF6B09" />
-              <path d={svgPathsW7.p387c00} fill="#FF8E43" />
-              <path d={svgPathsW7.p3077cc60} fill="#FF8E43" />
-              <path d={svgPathsW7.p202a6700} fill="#FF6B09" />
-              <path d={svgPathsW7.p11b67970} fill="#FF6B09" />
-              <path d={svgPathsW7.p22182400} stroke="#BD3505" />
-            </g>
-          </g>
-          <path d={svgPathsW7.p34b66680} fill="white" />
-          <g>
-            <path d={svgPathsW7.pe629400} fill="white" />
-            <path d={svgPathsW7.p13453a00} fill="white" />
-            <path d={svgPathsW7.p1cf9d780} fill="white" />
-          </g>
-          <g>
-            <path d={svgPathsW7.p2f158080} fill="white" />
-            <path d={svgPathsW7.pd22d770} fill="white" />
-            <path d={svgPathsW7.p37fad00} fill="white" />
-          </g>
-          {/* Pink balloon */}
-          <g>
-            <rect fill="#C95B45" height="51.6233" rx="3.22646" width="80.6614" x="1330.82" y="1994.12" />
-            <line stroke="#C95B45" strokeLinecap="round" strokeWidth="3.22646" x1="1303.94" x2="1332.36" y1="1936.78" y2="1994.38" />
-            <line stroke="#C95B45" strokeLinecap="round" strokeWidth="3.22646" x1="1440.45" x2="1410.87" y1="1934.98" y2="1994.92" />
-            <g>
-              <path d={svgPathsW7.p34fe67c0} fill="#FF6CDB" />
-              <path d={svgPathsW7.p35777cc0} fill="#FF6CDB" />
-              <path d={svgPathsW7.p3298f700} fill="#B60D3F" />
-              <path d={svgPathsW7.paac330} fill="#BA325A" />
-              <path d={svgPathsW7.p2158a380} fill="#B60D3F" />
-              <path d={svgPathsW7.p1ee00300} fill="#BA325A" />
-              <path d={svgPathsW7.p245bd200} fill="#FF6CDB" />
-              <path d={svgPathsW7.p37191400} fill="#FF6CDB" />
-              <path d={svgPathsW7.pb8e2470} fill="#FF6CDB" />
-              <path d={svgPathsW7.p2f948500} fill="#B60D3F" />
-            </g>
-          </g>
-          {/* Another pink balloon */}
-          <g>
-            <rect fill="#C95B45" height="51.6233" rx="3.22646" width="80.6614" x="1428.82" y="825.121" />
-            <line stroke="#C95B45" strokeLinecap="round" strokeWidth="3.22646" x1="1401.94" x2="1430.36" y1="767.778" y2="825.381" />
-            <line stroke="#C95B45" strokeLinecap="round" strokeWidth="3.22646" x1="1538.45" x2="1508.87" y1="765.979" y2="825.921" />
-            <g>
-              <path d={svgPathsW7.pfc99500} fill="#FF6CDB" />
-              <path d={svgPathsW7.p53f2400} fill="#FF6CDB" />
-              <path d={svgPathsW7.p9c05080} fill="#B60D3F" />
-              <path d={svgPathsW7.p4aacc00} fill="#BA325A" />
-              <path d={svgPathsW7.p113ea980} fill="#B60D3F" />
-              <path d={svgPathsW7.p12f23e00} fill="#BA325A" />
-              <path d={svgPathsW7.p82b9500} fill="#FF6CDB" />
-              <path d={svgPathsW7.p488e00} fill="#FF6CDB" />
-              <path d={svgPathsW7.p31649670} fill="#FF6CDB" />
-              <path d={svgPathsW7.p39f17df0} fill="#B60D3F" />
-            </g>
-          </g>
-          {/* Blue balloon */}
-          <g>
-            <rect fill="#C95B45" height="36.4937" rx="2.28086" width="57.0215" x="220.6" y="882.145" />
-            <line stroke="#C95B45" strokeLinecap="round" strokeWidth="2.28086" x1="201.6" x2="221.689" y1="841.608" y2="882.329" />
-            <line stroke="#C95B45" strokeLinecap="round" strokeWidth="2.28086" x1="298.097" x2="277.185" y1="840.336" y2="882.711" />
-            <g>
-              <path d={svgPathsW7.p2fee4200} fill="#68A8FF" />
-              <path d={svgPathsW7.p2efa7280} fill="#016DFF" />
-              <path d={svgPathsW7.p15a0c900} fill="#68A8FF" />
-              <path d={svgPathsW7.p2a082e20} fill="#016DFF" />
-              <path d={svgPathsW7.p146bbd80} fill="#68A8FF" />
-              <path d={svgPathsW7.p24a69700} fill="#68A8FF" />
-              <path d={svgPathsW7.p30ac8a80} fill="#68A8FF" />
-              <path d={svgPathsW7.p273c6600} fill="#68A8FF" />
-              <path d={svgPathsW7.p1fa45980} fill="#016DFF" />
-              <path d={svgPathsW7.p1c790d00} fill="#016DFF" />
-              <path d={svgPathsW7.p2183480} fill="#016DFF" />
-              <path d={svgPathsW7.pc5787f0} fill="#68A8FF" />
-              <path d={svgPathsW7.p21d391f0} fill="#68A8FF" />
-              <path d={svgPathsW7.p45e0640} fill="#016DFF" />
-              <path d={svgPathsW7.pea4f980} fill="#016DFF" />
-              <path d={svgPathsW7.p243718d0} stroke="black" strokeWidth="0.570215" />
-            </g>
-          </g>
-          {/* Another blue balloon */}
-          <g>
-            <rect fill="#C95B45" height="36.4937" rx="2.28086" width="57.0215" x="747.6" y="1820.15" />
-            <line stroke="#C95B45" strokeLinecap="round" strokeWidth="2.28086" x1="728.6" x2="748.689" y1="1779.61" y2="1820.33" />
-            <line stroke="#C95B45" strokeLinecap="round" strokeWidth="2.28086" x1="825.097" x2="804.185" y1="1778.34" y2="1820.71" />
-            <g>
-              <path d={svgPathsW7.p17640f00} fill="#68A8FF" />
-              <path d={svgPathsW7.p10add500} fill="#016DFF" />
-              <path d={svgPathsW7.p1155ee00} fill="#68A8FF" />
-              <path d={svgPathsW7.p235218f2} fill="#016DFF" />
-              <path d={svgPathsW7.p3f642d80} fill="#68A8FF" />
-              <path d={svgPathsW7.p23c00100} fill="#68A8FF" />
-              <path d={svgPathsW7.p1a9c4f80} fill="#68A8FF" />
-              <path d={svgPathsW7.p177948f0} fill="#68A8FF" />
-              <path d={svgPathsW7.p26c8c000} fill="#016DFF" />
-              <path d={svgPathsW7.p10e53d00} fill="#016DFF" />
-              <path d={svgPathsW7.pcdd3500} fill="#016DFF" />
-              <path d={svgPathsW7.p43b3080} fill="#68A8FF" />
-              <path d={svgPathsW7.p3bb91800} fill="#68A8FF" />
-              <path d={svgPathsW7.p11e71e80} fill="#016DFF" />
-              <path d={svgPathsW7.p3bf30a00} fill="#016DFF" />
-              <path d={svgPathsW7.peb7d200} stroke="black" strokeWidth="0.570215" />
-            </g>
-          </g>
-          {/* Orange balloon bottom */}
-          <g>
-            <rect fill="#C95B45" height="64" rx="4" width="100" x="106" y="2391" />
-            <line stroke="#C95B45" strokeLinecap="round" strokeWidth="4" x1="72.6785" x2="107.909" y1="2319.91" y2="2391.32" />
-            <line stroke="#C95B45" strokeLinecap="round" strokeWidth="4" x1="241.908" x2="205.234" y1="2317.68" y2="2391.99" />
-            <g>
-              <path d={svgPathsW7.p211bea00} fill="#FF8E43" />
-              <path d={svgPathsW7.p3ced4700} fill="#FF6B09" />
-              <path d={svgPathsW7.p2cb17000} fill="#FF8E43" />
-              <path d={svgPathsW7.p11efa180} fill="#FF6B09" />
-              <path d={svgPathsW7.p10e02e80} fill="#FF8E43" />
-              <path d={svgPathsW7.p36a39600} fill="#FF8E43" />
-              <path d={svgPathsW7.p18190980} fill="#FF8E43" />
-              <path d={svgPathsW7.p2c54a140} fill="#FF8E43" />
-              <path d={svgPathsW7.p31759880} fill="#FF6B09" />
-              <path d={svgPathsW7.p21aef000} fill="#FF6B09" />
-              <path d={svgPathsW7.p9b2a80} fill="#FF6B09" />
-              <path d={svgPathsW7.p2ed20a00} fill="#FF8E43" />
-              <path d={svgPathsW7.p3eda4c00} fill="#FF8E43" />
-              <path d={svgPathsW7.p3428d400} fill="#FF6B09" />
-              <path d={svgPathsW7.p246d7600} fill="#FF6B09" />
-              <path d={svgPathsW7.p2be3c300} stroke="#BD3505" />
-            </g>
-          </g>
-          {/* Small basket bottom */}
-          <g>
-            <rect fill="#C95B45" height="38.2196" rx="2.38873" width="59.7181" x="1212.14" y="2732.52" />
-            <line stroke="#C95B45" strokeLinecap="round" strokeWidth="2.38873" x1="1192.24" x2="1213.28" y1="2690.06" y2="2732.71" />
-            <line stroke="#C95B45" strokeLinecap="round" strokeWidth="2.38873" x1="1293.3" x2="1271.4" y1="2688.73" y2="2733.11" />
-            <path d={svgPathsW7.p1636b100} />
-          </g>
-        </g>
-        <defs>
-          <clipPath id="clip0_bg">
-            <rect fill="white" height="499" transform="translate(99 1020.74)" width="1440" />
-          </clipPath>
-          <clipPath id="clip1_bg">
-            <rect fill="white" height="499" transform="translate(84)" width="1440" />
-          </clipPath>
-        </defs>
-      </svg>
-      {/* Group40 balloon overlay at position of old basket (y=1443) */}
-      <div className="absolute" style={{ left: "10.22%", top: "4.07%", width: "13.87%", height: "11.01%" }}>
-        <Group40 />
-      </div>
-    </div>
+    </section>
   );
 }
