@@ -155,6 +155,7 @@ a {
 @keyframes hero-cloud-enter {
   from { opacity: 0; transform: translateY(-16px) scale(.96); }
   to { opacity: 1; transform: translateY(0) scale(1); }
+}
 @keyframes hero-cloud-float {
   from { transform: translate3d(-9px, 0, 0); }
   to { transform: translate3d(11px, -8px, 0); }
