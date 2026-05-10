@@ -145,6 +145,7 @@ a {
 @keyframes hero-cat-bob {
   from { transform: translateY(0) rotate(-.8deg); }
   to { transform: translateY(-7px) rotate(1deg); }
+}
 @keyframes hero-title-slide {
   0% { opacity: 0; transform: translate(-50%, 112%); }
   68% { opacity: 1; transform: translate(-50%, -7px); }
