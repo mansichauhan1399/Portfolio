@@ -70,6 +70,7 @@ export default function App() {
   const pageRef = useRef<HTMLDivElement>(null);
   const pinRef = useRef<HTMLElement>(null);
   const stackRef = useRef<HTMLDivElement>(null);
+  const progressRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<HTMLDivElement[]>([]);
   const decorRefs = useRef<HTMLDivElement[]>([]);
 
@@ -77,85 +78,166 @@ export default function App() {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const ctx = gsap.context(() => {
+      const visibleDeckPositions = cards.map((card, index) => ({
+        xPercent: index === 0 ? 0 : index % 2 === 0 ? -7 : 7,
+        yPercent: index * 5,
+        rotate: card.rotation * 0.72,
+        scale: 1 - index * 0.045,
+        opacity: 1 - index * 0.08,
+      }));
+
       gsap.set(cardRefs.current, {
-        transformPerspective: 1200,
-        transformOrigin: "50% 56%",
-        willChange: "transform, opacity",
+        transformPerspective: 1400,
+        transformOrigin: "50% 68%",
+        willChange: "transform, opacity, filter",
+        filter: "blur(0px)",
       });
+
+      gsap.set(stackRef.current, { transformOrigin: "50% 55%", willChange: "transform" });
+      gsap.set(progressRef.current, { scaleX: 0, transformOrigin: "0% 50%" });
 
       cards.forEach((card, index) => {
         const el = cardRefs.current[index];
         gsap.set(el, {
-          xPercent: index === 0 ? 0 : index % 2 === 0 ? 7 : -7,
-          yPercent: index === 0 ? 46 : 20 + index * 7,
+          xPercent: index % 2 === 0 ? 14 : -14,
+          yPercent: 58 + index * 8,
           zIndex: cards.length - index,
-          rotate: index === 0 ? -10 : card.rotation,
-          rotateY: index === 0 ? -16 : 0,
-          scale: index === 0 ? 0.92 : 0.88 - index * 0.025,
-          opacity: index === 0 ? 0 : 0,
+          rotate: index % 2 === 0 ? card.rotation - 7 : card.rotation + 7,
+          rotateX: index === 0 ? 13 : 7,
+          rotateY: index % 2 === 0 ? -14 : 14,
+          scale: 0.82 - index * 0.025,
+          opacity: 0,
+          filter: "blur(10px)",
         });
       });
 
       const timeline = gsap.timeline({
         defaults: {
           ease: reduceMotion ? "none" : "power3.out",
-          duration: reduceMotion ? 0.01 : 0.85,
+          duration: reduceMotion ? 0.01 : 0.8,
         },
         scrollTrigger: {
           trigger: pinRef.current,
           start: "top top",
-          end: () => `+=${Math.max(window.innerHeight * 3.2, 2200)}`,
-          scrub: reduceMotion ? true : 0.8,
+          end: () => `+=${Math.max(window.innerHeight * 3.8, 2600)}`,
+          scrub: reduceMotion ? true : 0.65,
           pin: true,
           anticipatePin: 1,
           invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            const progress = self.progress.toFixed(3);
+            pinRef.current?.style.setProperty("--scroll-progress", progress);
+            gsap.set(progressRef.current, { scaleX: progress });
+          },
         },
       });
 
       timeline
-        .to(cardRefs.current[0], {
-          opacity: 1,
-          yPercent: 0,
-          rotate: cards[0].rotation,
-          rotateY: 0,
-          scale: 1,
-        })
         .to(
-          cardRefs.current.slice(1),
+          stackRef.current,
           {
-            opacity: 1,
-            yPercent: (index) => 10 + index * 6,
-            xPercent: (index) => (index % 2 === 0 ? -5 : 5),
-            scale: (index) => 0.94 - index * 0.035,
-            stagger: 0.08,
+            rotateX: reduceMotion ? 0 : -2,
+            rotateY: reduceMotion ? 0 : 3,
+            yPercent: -2,
+            scale: 1.015,
+            duration: 0.95,
           },
-          ">-0.2",
+          0,
+        )
+        .to(
+          cardRefs.current,
+          {
+            opacity: (index) => visibleDeckPositions[index].opacity,
+            xPercent: (index) => visibleDeckPositions[index].xPercent,
+            yPercent: (index) => visibleDeckPositions[index].yPercent,
+            rotate: (index) => visibleDeckPositions[index].rotate,
+            rotateX: 0,
+            rotateY: 0,
+            scale: (index) => visibleDeckPositions[index].scale,
+            filter: "blur(0px)",
+            stagger: reduceMotion ? 0 : 0.08,
+            duration: 1.05,
+          },
+          0.12,
         );
 
-      cards.slice(1).forEach((_, index) => {
-        const cardIndex = index + 1;
+      cards.forEach((card, activeIndex) => {
+        const previousCards = cardRefs.current.slice(0, activeIndex);
+        const nextCards = cardRefs.current.slice(activeIndex + 1);
+        const direction = activeIndex % 2 === 0 ? -1 : 1;
+
         timeline
-          .to(cardRefs.current[cardIndex], {
-            yPercent: -4 + index * 2,
-            xPercent: index % 2 === 0 ? 3 : -3,
-            rotate: cards[cardIndex].rotation,
-            scale: 1 - index * 0.015,
-            zIndex: cards.length + cardIndex,
-          })
           .to(
-            cardRefs.current.slice(0, cardIndex),
+            cardRefs.current[activeIndex],
             {
-              yPercent: (olderIndex) => 10 + olderIndex * 5,
-              xPercent: (olderIndex) => (olderIndex % 2 === 0 ? -8 : 8),
-              rotate: (olderIndex) => cards[olderIndex].rotation * 0.7,
-              scale: (olderIndex) => 0.9 - olderIndex * 0.025,
-              opacity: 0.82,
+              xPercent: direction * 1.5,
+              yPercent: -6,
+              rotate: card.rotation * 0.25,
+              scale: 1.035,
+              opacity: 1,
+              zIndex: cards.length + activeIndex + 10,
+              filter: "blur(0px)",
+              duration: 0.72,
+            },
+            activeIndex === 0 ? ">-0.28" : ">-0.08",
+          )
+          .to(
+            previousCards,
+            {
+              xPercent: (index) => (index % 2 === 0 ? -13 : 13),
+              yPercent: (index) => 12 + index * 4,
+              rotate: (index) => cards[index].rotation * 0.55,
+              scale: (index) => 0.86 - index * 0.025,
+              opacity: 0.62,
+              filter: "blur(1.2px)",
+              duration: 0.72,
             },
             "<",
+          )
+          .to(
+            nextCards,
+            {
+              xPercent: (index) => (index % 2 === 0 ? 8 : -8),
+              yPercent: (index) => 12 + index * 6,
+              rotate: (index) => cards[activeIndex + index + 1].rotation * 0.72,
+              scale: (index) => 0.93 - index * 0.035,
+              opacity: (index) => 0.9 - index * 0.08,
+              filter: "blur(0.4px)",
+              duration: 0.72,
+            },
+            "<",
+          )
+          .to(
+            cardRefs.current[activeIndex],
+            {
+              xPercent: activeIndex % 2 === 0 ? -15 : 15,
+              yPercent: 10 + activeIndex * 4,
+              rotate: card.rotation,
+              scale: 0.9 - activeIndex * 0.022,
+              opacity: activeIndex === cards.length - 1 ? 1 : 0.68,
+              zIndex: cards.length - activeIndex,
+              duration: 0.68,
+            },
+            ">+0.1",
           );
       });
 
-      timeline.to(stackRef.current, { yPercent: -6, scale: 0.98, duration: 0.7 });
+      timeline.to(
+        cardRefs.current,
+        {
+          xPercent: (index) => (index - 1.5) * 11,
+          yPercent: (index) => index * 4,
+          rotate: (index) => cards[index].rotation,
+          scale: (index) => 0.94 - Math.abs(index - 1.5) * 0.015,
+          opacity: 1,
+          filter: "blur(0px)",
+          stagger: reduceMotion ? 0 : 0.035,
+          duration: 0.85,
+        },
+        ">-0.08",
+      );
+
+      timeline.to(stackRef.current, { yPercent: -5, rotateX: 0, rotateY: 0, scale: 0.99, duration: 0.65 }, "<");
 
       decorRefs.current.forEach((el, index) => {
         gsap.to(el, {
@@ -193,6 +275,10 @@ export default function App() {
         <DecorativeObjects decorRefs={decorRefs} />
 
         <div ref={stackRef} className="case-card-stack" aria-live="polite">
+          <div className="stack-aura" aria-hidden="true" />
+          <div className="stack-progress-rail" aria-hidden="true">
+            <div ref={progressRef} className="stack-progress-fill" />
+          </div>
           {cards.map((card, index) => (
             <CaseStudyCard
               key={card.title}
@@ -266,6 +352,8 @@ function CaseStudyCard({
 }) {
   return (
     <article ref={setRef} className="case-card" style={{ "--card-color": card.color, "--card-accent": card.accent } as React.CSSProperties}>
+      <div className="card-gloss" aria-hidden="true" />
+      <div className="card-badge" aria-hidden="true">{String(index + 1).padStart(2, "0")}</div>
       <div className="card-visual" aria-hidden="true">
         <PlaceholderArt index={index} />
       </div>
