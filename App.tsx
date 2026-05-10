@@ -1,184 +1,176 @@
 import { useEffect, useRef } from "react";
-import type { CSSProperties } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-type PortfolioCard = {
+type StudyCard = {
   eyebrow: string;
   title: string;
-  description: string;
-  background: string;
-  foreground: string;
+  body: string;
+  color: string;
   accent: string;
   rotation: number;
 };
 
-const portfolioCards: PortfolioCard[] = [
+const cards: StudyCard[] = [
   {
-    eyebrow: "PROJECT 1",
-    title: "Healthcare AI Platform",
-    description: "Designing intelligent workflows that help care teams understand patient risk and act faster.",
-    background: "#eb70c7",
-    foreground: "#4f2576",
-    accent: "#fff4b8",
-    rotation: -3.5,
+    eyebrow: "01 / Discovery",
+    title: "Start with a tiny spark",
+    body: "A playful audit turned fuzzy ideas into a confident story arc for the case study.",
+    color: "#ff6f61",
+    accent: "#ffe7db",
+    rotation: -4,
   },
   {
-    eyebrow: "PROJECT 2",
-    title: "Care Team Command Center",
-    description: "A focused operating layer for surfacing next-best actions across complex clinical programs.",
-    background: "#126cf5",
-    foreground: "#ffd03f",
-    accent: "#ffffff",
-    rotation: 2.5,
+    eyebrow: "02 / System",
+    title: "Stack the proof points",
+    body: "Research, metrics, and sketches stay layered until the scroll invites each one forward.",
+    color: "#573dde",
+    accent: "#dfdcff",
+    rotation: 3,
   },
   {
-    eyebrow: "PROJECT 3",
-    title: "Patient Insights System",
-    description: "Turning dense healthcare data into confident, scannable product experiences.",
-    background: "#fffdf7",
-    foreground: "#d69b00",
-    accent: "#126cf5",
-    rotation: -1.5,
+    eyebrow: "03 / Prototype",
+    title: "Make movement useful",
+    body: "Pinned progression lets readers linger without losing their place in the narrative.",
+    color: "#016dff",
+    accent: "#d8ecff",
+    rotation: -2,
+  },
+  {
+    eyebrow: "04 / Outcome",
+    title: "Land on the takeaway",
+    body: "The final card opens the door to a normal long-form case study with room for detail.",
+    color: "#05b9aa",
+    accent: "#d9fff7",
+    rotation: 4,
+  },
+];
+
+const contentBlocks = [
+  {
+    label: "Problem",
+    heading: "Visitors needed a faster way to understand the project value.",
+    copy: "The original flow buried the strongest evidence. This concept uses a tactile card reveal to preview the strategic moments before the full write-up begins.",
+  },
+  {
+    label: "Approach",
+    heading: "Pin the key sequence, then return control to the reader.",
+    copy: "GSAP ScrollTrigger keeps the card section in place while cards ease forward one by one. Once the sequence finishes, the page continues naturally into traditional case-study content.",
+  },
+  {
+    label: "Result",
+    heading: "A memorable introduction that still respects scannability.",
+    copy: "The stack, overlaps, rotations, and parallax objects add personality while responsive layout rules keep the experience practical across screen sizes.",
   },
 ];
 
 export default function App() {
   const pageRef = useRef<HTMLDivElement>(null);
   const pinRef = useRef<HTMLElement>(null);
-  const deckRef = useRef<HTMLDivElement>(null);
+  const stackRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<HTMLDivElement[]>([]);
+  const decorRefs = useRef<HTMLDivElement[]>([]);
 
   useEffect(() => {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const ctx = gsap.context(() => {
-      gsap.set(deckRef.current, {
-        transformPerspective: 1600,
-        transformStyle: "preserve-3d",
-        transformOrigin: "50% 50%",
-        willChange: "transform",
-      });
-
       gsap.set(cardRefs.current, {
-        transformOrigin: "50% 64%",
-        transformStyle: "preserve-3d",
-        willChange: "transform, opacity, filter",
+        transformPerspective: 1200,
+        transformOrigin: "50% 56%",
+        willChange: "transform, opacity",
       });
 
-      cardRefs.current.forEach((card, index) => {
-        gsap.set(card, {
-          xPercent: index === 0 ? 0 : index % 2 === 0 ? -7 : 7,
-          yPercent: index === 0 ? 34 : 10 + index * 7,
-          z: index === 0 ? -180 : -260 - index * 90,
-          rotateX: index === 0 ? -72 : -10,
-          rotateY: index === 0 ? 12 : index % 2 === 0 ? -7 : 7,
-          rotateZ: index === 0 ? -10 : portfolioCards[index].rotation,
-          scale: index === 0 ? 0.82 : 0.88 - index * 0.04,
-          opacity: index === 0 ? 0 : 0.38 - index * 0.06,
-          filter: index === 0 ? "blur(10px)" : "blur(2px)",
-          zIndex: portfolioCards.length - index,
+      cards.forEach((card, index) => {
+        const el = cardRefs.current[index];
+        gsap.set(el, {
+          xPercent: index === 0 ? 0 : index % 2 === 0 ? 7 : -7,
+          yPercent: index === 0 ? 46 : 20 + index * 7,
+          zIndex: cards.length - index,
+          rotate: index === 0 ? -10 : card.rotation,
+          rotateY: index === 0 ? -16 : 0,
+          scale: index === 0 ? 0.92 : 0.88 - index * 0.025,
+          opacity: index === 0 ? 0 : 0,
         });
       });
 
       const timeline = gsap.timeline({
         defaults: {
-          ease: reduceMotion ? "none" : "power3.inOut",
-          duration: reduceMotion ? 0.01 : 1,
+          ease: reduceMotion ? "none" : "power3.out",
+          duration: reduceMotion ? 0.01 : 0.85,
         },
         scrollTrigger: {
           trigger: pinRef.current,
           start: "top top",
-          end: () => `+=${Math.max(window.innerHeight * 3.8, 2800)}`,
-          scrub: reduceMotion ? true : 0.85,
+          end: () => `+=${Math.max(window.innerHeight * 3.2, 2200)}`,
+          scrub: reduceMotion ? true : 0.8,
           pin: true,
           anticipatePin: 1,
           invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            pinRef.current?.style.setProperty("--stack-progress", self.progress.toFixed(3));
-          },
         },
       });
 
       timeline
         .to(cardRefs.current[0], {
-          xPercent: 0,
-          yPercent: 0,
-          z: 80,
-          rotateX: 0,
-          rotateY: 0,
-          rotateZ: portfolioCards[0].rotation,
-          scale: 1,
           opacity: 1,
-          filter: "blur(0px)",
-          zIndex: 40,
-          duration: 1.15,
+          yPercent: 0,
+          rotate: cards[0].rotation,
+          rotateY: 0,
+          scale: 1,
         })
-        .to(deckRef.current, { rotateX: -2, rotateY: 2, scale: 1.015, duration: 0.65 }, "<")
-        .to({}, { duration: 0.2 });
+        .to(
+          cardRefs.current.slice(1),
+          {
+            opacity: 1,
+            yPercent: (index) => 10 + index * 6,
+            xPercent: (index) => (index % 2 === 0 ? -5 : 5),
+            scale: (index) => 0.94 - index * 0.035,
+            stagger: 0.08,
+          },
+          ">-0.2",
+        );
 
-      portfolioCards.slice(1).forEach((card, index) => {
-        const activeIndex = index + 1;
-        const olderCards = cardRefs.current.slice(0, activeIndex);
-        const upcomingCards = cardRefs.current.slice(activeIndex + 1);
-
+      cards.slice(1).forEach((_, index) => {
+        const cardIndex = index + 1;
         timeline
+          .to(cardRefs.current[cardIndex], {
+            yPercent: -4 + index * 2,
+            xPercent: index % 2 === 0 ? 3 : -3,
+            rotate: cards[cardIndex].rotation,
+            scale: 1 - index * 0.015,
+            zIndex: cards.length + cardIndex,
+          })
           .to(
-            olderCards,
+            cardRefs.current.slice(0, cardIndex),
             {
-              xPercent: (olderIndex) => (olderIndex % 2 === 0 ? -13 : 13),
-              yPercent: (olderIndex) => 14 + olderIndex * 7,
-              z: (olderIndex) => -120 - olderIndex * 70,
-              rotateX: -6,
-              rotateY: (olderIndex) => (olderIndex % 2 === 0 ? -5 : 5),
-              rotateZ: (olderIndex) => portfolioCards[olderIndex].rotation * 0.8,
-              scale: (olderIndex) => 0.86 - olderIndex * 0.035,
-              opacity: 0.58,
-              filter: "blur(1.1px)",
-              zIndex: (olderIndex) => 12 - olderIndex,
-              duration: 0.9,
-            },
-            ">",
-          )
-          .to(
-            cardRefs.current[activeIndex],
-            {
-              xPercent: 0,
-              yPercent: 0,
-              z: 100,
-              rotateX: 0,
-              rotateY: 0,
-              rotateZ: card.rotation,
-              scale: 1,
-              opacity: 1,
-              filter: "blur(0px)",
-              zIndex: 45 + activeIndex,
-              duration: 0.95,
+              yPercent: (olderIndex) => 10 + olderIndex * 5,
+              xPercent: (olderIndex) => (olderIndex % 2 === 0 ? -8 : 8),
+              rotate: (olderIndex) => cards[olderIndex].rotation * 0.7,
+              scale: (olderIndex) => 0.9 - olderIndex * 0.025,
+              opacity: 0.82,
             },
             "<",
-          )
-          .to(
-            upcomingCards,
-            {
-              xPercent: (upcomingIndex) => (upcomingIndex % 2 === 0 ? 7 : -7),
-              yPercent: (upcomingIndex) => 13 + upcomingIndex * 7,
-              z: (upcomingIndex) => -240 - upcomingIndex * 80,
-              rotateX: -8,
-              rotateY: (upcomingIndex) => (upcomingIndex % 2 === 0 ? 6 : -6),
-              scale: (upcomingIndex) => 0.88 - upcomingIndex * 0.04,
-              opacity: (upcomingIndex) => 0.42 - upcomingIndex * 0.08,
-              filter: "blur(2px)",
-              duration: 0.95,
-            },
-            "<",
-          )
-          .to(deckRef.current, { rotateX: index % 2 === 0 ? 1 : -1, rotateY: index % 2 === 0 ? -2 : 2, duration: 0.45 }, "<")
-          .to({}, { duration: 0.18 });
+          );
       });
 
-      timeline.to(deckRef.current, { rotateX: 0, rotateY: 0, scale: 0.99, duration: 0.7 });
+      timeline.to(stackRef.current, { yPercent: -6, scale: 0.98, duration: 0.7 });
+
+      decorRefs.current.forEach((el, index) => {
+        gsap.to(el, {
+          y: index % 2 === 0 ? -90 : 80,
+          x: index === 1 ? 34 : index === 2 ? -24 : 12,
+          rotate: index % 2 === 0 ? 10 : -12,
+          ease: "none",
+          scrollTrigger: {
+            trigger: pinRef.current,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: reduceMotion ? true : 1.2,
+          },
+        });
+      });
     }, pageRef);
 
     return () => ctx.revert();
@@ -187,42 +179,34 @@ export default function App() {
   return (
     <main ref={pageRef} className="portfolio-page">
       <HeroSection />
-      <section ref={pinRef} className="stack-section" aria-label="Pinned portfolio project deck">
-        <div className="stack-heading" aria-hidden="true">
-          <span>Selected work</span>
+
+      <section ref={pinRef} className="card-pin-section" aria-label="Scroll driven case study highlights">
+        <div className="pin-copy">
+          <p className="section-kicker">Selected case study</p>
+          <h2>Scroll to pull each idea from the stack.</h2>
+          <p>
+            The section pins while a playful deck previews the project phases. The cards rotate,
+            overlap, and ease forward before the long-form story resumes.
+          </p>
         </div>
-        <div ref={deckRef} className="portfolio-deck">
-          {portfolioCards.map((card, index) => (
-            <article
-              key={card.eyebrow}
-              ref={(node) => {
+
+        <DecorativeObjects decorRefs={decorRefs} />
+
+        <div ref={stackRef} className="case-card-stack" aria-live="polite">
+          {cards.map((card, index) => (
+            <CaseStudyCard
+              key={card.title}
+              card={card}
+              index={index}
+              setRef={(node) => {
                 if (node) cardRefs.current[index] = node;
               }}
-              className="portfolio-card"
-              style={
-                {
-                  "--card-bg": card.background,
-                  "--card-fg": card.foreground,
-                  "--card-accent": card.accent,
-                } as CSSProperties
-              }
-            >
-              <div className="portfolio-card__shine" aria-hidden="true" />
-              <p>{card.eyebrow}</p>
-              <h2>{card.title}</h2>
-              <span>{card.description}</span>
-              <div className="portfolio-card__meta" aria-hidden="true">
-                <small>Product strategy</small>
-                <small>UX systems</small>
-              </div>
-            </article>
+            />
           ))}
         </div>
       </section>
-      <section className="case-study-content" id="case-study-content">
-        <p className="section-kicker">Full case study</p>
-        <h2>The normal content begins after the cinematic deck reveal.</h2>
-      </section>
+
+      <CaseStudyContent />
     </main>
   );
 }
@@ -230,32 +214,133 @@ export default function App() {
 function HeroSection() {
   return (
     <section className="hero-section" aria-label="Associate Product Designer introduction">
-      <div className="hero-cloud hero-cloud--top" aria-hidden="true"><span /><span /><span /></div>
-      <div className="hero-cloud hero-cloud--side" aria-hidden="true"><span /><span /><span /></div>
-      <div className="hero-shape hero-shape--triangle" aria-hidden="true" />
-      <div className="hero-shape hero-shape--sun" aria-hidden="true" />
-      <div className="hero-illustration" aria-hidden="true">
-        <div className="cat">
-          <span className="cat-ear cat-ear--left" />
-          <span className="cat-ear cat-ear--right" />
+      <div className="hero-pink-plane" aria-hidden="true" />
+      <div className="hero-cloud hero-cloud-main" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+        <span />
+      </div>
+      <div className="hero-cloud hero-cloud-left" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+      </div>
+
+      <div className="hero-house" aria-hidden="true">
+        <span className="hero-house-roof" />
+        <span className="hero-house-body" />
+        <span className="hero-house-base" />
+      </div>
+
+      <div className="hero-sun" aria-hidden="true">
+        <span />
+      </div>
+
+      <div className="hero-flower" aria-hidden="true">
+        <span className="flower-petal flower-petal-left" />
+        <span className="flower-petal flower-petal-center" />
+        <span className="flower-petal flower-petal-right" />
+        <span className="flower-head" />
+        <span className="flower-stem" />
+      </div>
+
+      <div className="hero-character" aria-hidden="true">
+        <div className="hero-cat">
+          <span className="cat-ear cat-ear-left" />
+          <span className="cat-ear cat-ear-right" />
           <span className="cat-body" />
           <span className="cat-tail" />
-          <span className="cat-face" />
+          <span className="cat-head" />
         </div>
-        <div className="person">
-          <div className="hair" />
-          <div className="face">
-            <span className="eye eye--left" />
-            <span className="eye eye--right" />
-            <span className="glasses glasses--left" />
-            <span className="glasses glasses--right" />
-            <span className="mouth" />
-          </div>
+        <div className="hero-person">
+          <span className="person-hair" />
+          <span className="person-face" />
+          <span className="person-ear person-ear-left" />
+          <span className="person-ear person-ear-right" />
+          <span className="person-glasses person-glasses-left" />
+          <span className="person-glasses person-glasses-right" />
+          <span className="person-glasses-bridge" />
+          <span className="person-eye person-eye-left" />
+          <span className="person-eye person-eye-right" />
+          <span className="person-nose" />
+          <span className="person-mouth" />
         </div>
       </div>
+
       <div className="hero-title-card">
-        <p>Portfolio</p>
-        <h1>Associate Product Designer</h1>
+        <h1>
+          <span>Associate Product</span>
+          <span>Designer</span>
+        </h1>
+      </div>
+    </section>
+  );
+}
+
+function DecorativeObjects({ decorRefs }: { decorRefs: React.MutableRefObject<HTMLDivElement[]> }) {
+  return (
+    <div className="decor-layer" aria-hidden="true">
+      {["circle", "squiggle", "triangle", "pill"].map((shape, index) => (
+        <div
+          key={shape}
+          ref={(node) => {
+            if (node) decorRefs.current[index] = node;
+          }}
+          className={`decor-object decor-${shape}`}
+        />
+      ))}
+    </div>
+  );
+}
+
+function CaseStudyCard({
+  card,
+  index,
+  setRef,
+}: {
+  card: StudyCard;
+  index: number;
+  setRef: (node: HTMLDivElement | null) => void;
+}) {
+  return (
+    <article ref={setRef} className="case-card" style={{ "--card-color": card.color, "--card-accent": card.accent } as React.CSSProperties}>
+      <div className="card-visual" aria-hidden="true">
+        <PlaceholderArt index={index} />
+      </div>
+      <div className="card-copy">
+        <p>{card.eyebrow}</p>
+        <h3>{card.title}</h3>
+        <span>{card.body}</span>
+      </div>
+    </article>
+  );
+}
+
+function PlaceholderArt({ index }: { index: number }) {
+  return (
+    <svg viewBox="0 0 240 160" role="img" aria-label="Placeholder project visual">
+      <rect x="12" y="16" width="216" height="128" rx="28" fill="var(--card-accent)" />
+      <circle cx={index % 2 === 0 ? 74 : 166} cy="72" r="32" fill="var(--card-color)" />
+      <path d="M54 116 C92 86, 132 148, 188 98" fill="none" stroke="#1f1b2d" strokeWidth="10" strokeLinecap="round" />
+      <path d="M158 42 l34 18 -34 18z" fill="#fdcb40" />
+    </svg>
+  );
+}
+
+function CaseStudyContent() {
+  return (
+    <section id="case-study-content" className="case-study-content">
+      <p className="section-kicker">Full case study</p>
+      <h2>The normal content begins after the pinned reveal.</h2>
+      <div className="content-grid">
+        {contentBlocks.map((block) => (
+          <article key={block.label} className="content-card">
+            <p>{block.label}</p>
+            <h3>{block.heading}</h3>
+            <span>{block.copy}</span>
+          </article>
+        ))}
       </div>
     </section>
   );
