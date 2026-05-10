@@ -38,20 +38,14 @@ a {
 
 .hero-section {
   position: relative;
-  min-height: 100svh;
   overflow: hidden;
   background: #ffd03f;
   isolation: isolate;
-}
-
 .hero-scene {
-  position: absolute;
   inset: 0;
   display: block;
   width: 100%;
   height: 100%;
-}
-
 .hero-svg-cloud {
   fill: #ffffff;
   transform-box: fill-box;
@@ -60,12 +54,8 @@ a {
 
 .hero-cloud-main-motion {
   animation: hero-cloud-enter 900ms cubic-bezier(.2, .8, .25, 1) both 180ms, hero-cloud-float 7s ease-in-out 1.15s infinite alternate;
-}
-
 .hero-cloud-left-motion {
   animation: hero-cloud-enter 900ms cubic-bezier(.2, .8, .25, 1) both 320ms, hero-cloud-float-soft 8.5s ease-in-out 1.3s infinite alternate;
-}
-
 .hero-house-motion {
   transform-box: fill-box;
   transform-origin: 50% 100%;
@@ -94,8 +84,6 @@ a {
   transform-box: fill-box;
   transform-origin: 50% 100%;
   animation: hero-character-enter 1.05s cubic-bezier(.18, .95, .22, 1) both 300ms, hero-character-breathe 5.8s ease-in-out 1.55s infinite alternate;
-}
-
 .hero-cat-motion {
   transform-box: fill-box;
   transform-origin: 50% 88%;
@@ -103,7 +91,6 @@ a {
 }
 
 .hero-title-card {
-  position: absolute;
   left: 50%;
   bottom: -1px;
   z-index: 5;
@@ -130,14 +117,11 @@ a {
   line-height: 1.24;
   text-align: center;
   text-transform: uppercase;
-}
-
 .hero-title-card span {
   display: block;
 }
 
 .hero-sr-title {
-  position: absolute;
   width: 1px;
   height: 1px;
   padding: 0;
@@ -146,7 +130,67 @@ a {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+@keyframes hero-character-enter {
+  0% { opacity: 0; transform: translateY(42px) scale(.94); }
+  72% { opacity: 1; transform: translateY(-4px) scale(1.015); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+@keyframes hero-character-breathe {
+  from { transform: translateY(0) scale(1); }
+  to { transform: translateY(-8px) scale(1.006); }
+@keyframes hero-cat-drop {
+  0% { opacity: 0; transform: translateY(-92px) rotate(-5deg) scale(.92); }
+  62% { opacity: 1; transform: translateY(9px) rotate(2deg) scale(1.025); }
+  82% { transform: translateY(-4px) rotate(-1deg) scale(.995); }
+  100% { opacity: 1; transform: translateY(0) rotate(0) scale(1); }
+@keyframes hero-cat-bob {
+  from { transform: translateY(0) rotate(-.8deg); }
+  to { transform: translateY(-7px) rotate(1deg); }
+@keyframes hero-title-slide {
+  0% { opacity: 0; transform: translate(-50%, 112%); }
+  68% { opacity: 1; transform: translate(-50%, -7px); }
+  84% { transform: translate(-50%, 3px); }
+  100% { opacity: 1; transform: translate(-50%, 0); }
 }
+
+@keyframes hero-cloud-enter {
+  from { opacity: 0; transform: translateY(-16px) scale(.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+@keyframes hero-cloud-float {
+  from { transform: translate3d(-9px, 0, 0); }
+  to { transform: translate3d(11px, -8px, 0); }
+}
+
+@keyframes hero-cloud-float-soft {
+  from { transform: translate3d(-6px, 3px, 0); }
+  to { transform: translate3d(12px, -5px, 0); }
+}
+
+@keyframes hero-pop-in {
+  from { opacity: 0; transform: translateY(24px) scale(.93); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+@keyframes hero-plane-rise {
+  from { opacity: 0; transform: translateY(30px) scaleY(.96); }
+  to { opacity: 1; transform: translateY(0) scaleY(1); }
+}
+
+@keyframes hero-plane-drift {
+  from { transform: translateX(-5px); }
+  to { transform: translateX(7px); }
+}
+
+@keyframes hero-sun-pulse {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(5deg) scale(1.035); }
+}
+
+@keyframes hero-flower-enter {
+  from { opacity: 0; transform: translateY(32px) rotate(-4deg) scale(.94); }
+  to { opacity: 1; transform: translateY(0) rotate(0deg) scale(1); }
+}
+
+@keyframes hero-flower-sway {
+  from { transform: translateY(0) rotate(-1.6deg); }
+  to { transform: translateY(-9px) rotate(1.8deg); }
 
 @keyframes hero-character-enter {
   0% { opacity: 0; transform: translateY(42px) scale(.94); }
@@ -356,23 +400,30 @@ a {
   height: clamp(2.2rem, 4vw, 3.75rem);
   border-radius: 999px;
   background: #05d7d2;
-  transform: rotate(-18deg);
-}
 
-.case-study-content {
-  min-height: 100svh;
-  padding: clamp(3rem, 8vw, 8rem) clamp(1.5rem, 5vw, 6rem);
-  background: #ffffff;
-}
+@media (max-width: 560px) {
+  .hero-section {
+    min-height: 760px;
+  }
 
-.case-study-content > h2 {
-  max-width: 960px;
-}
+  .hero-scene {
+    width: 156%;
+    max-width: none;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 
-.content-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(1rem, 2vw, 1.5rem);
+  .hero-title-card {
+    width: min(360px, calc(100vw - 1.5rem));
+    height: 142px;
+    padding-top: 15px;
+  }
+
+  .hero-title-card h1 {
+    font-size: 34px;
+    line-height: 1.23;
+  }
+}
   margin-top: clamp(2rem, 5vw, 4rem);
 }
 
