@@ -1,255 +1,196 @@
 import { useEffect, useRef } from "react";
+import type { CSSProperties, MutableRefObject } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-type StudyCard = {
-  eyebrow: string;
+type ProjectCard = {
+  label: string;
   title: string;
-  body: string;
   color: string;
-  accent: string;
+  textColor: string;
   rotation: number;
 };
 
-const cards: StudyCard[] = [
+const projects: ProjectCard[] = [
   {
-    eyebrow: "01 / Discovery",
-    title: "Start with a tiny spark",
-    body: "A playful audit turned fuzzy ideas into a confident story arc for the case study.",
-    color: "#ff6f61",
-    accent: "#ffe7db",
-    rotation: -4,
+    label: "PROJECT 1",
+    title: "Placeholder",
+    color: "#eb70c7",
+    textColor: "#65328a",
+    rotation: -3.5,
   },
   {
-    eyebrow: "02 / System",
-    title: "Stack the proof points",
-    body: "Research, metrics, and sketches stay layered until the scroll invites each one forward.",
-    color: "#573dde",
-    accent: "#dfdcff",
-    rotation: 3,
+    label: "PROJECT 2",
+    title: "Placeholder",
+    color: "#126cf5",
+    textColor: "#ffd03f",
+    rotation: 2.1,
   },
   {
-    eyebrow: "03 / Prototype",
-    title: "Make movement useful",
-    body: "Pinned progression lets readers linger without losing their place in the narrative.",
-    color: "#016dff",
-    accent: "#d8ecff",
-    rotation: -2,
-  },
-  {
-    eyebrow: "04 / Outcome",
-    title: "Land on the takeaway",
-    body: "The final card opens the door to a normal long-form case study with room for detail.",
-    color: "#05b9aa",
-    accent: "#d9fff7",
-    rotation: 4,
+    label: "PROJECT 3",
+    title: "Placeholder",
+    color: "#fffdf7",
+    textColor: "#ffd03f",
+    rotation: -1.2,
   },
 ];
 
-const contentBlocks = [
-  {
-    label: "Problem",
-    heading: "Visitors needed a faster way to understand the project value.",
-    copy: "The original flow buried the strongest evidence. This concept uses a tactile card reveal to preview the strategic moments before the full write-up begins.",
-  },
-  {
-    label: "Approach",
-    heading: "Pin the key sequence, then return control to the reader.",
-    copy: "GSAP ScrollTrigger keeps the card section in place while cards ease forward one by one. Once the sequence finishes, the page continues naturally into traditional case-study content.",
-  },
-  {
-    label: "Result",
-    heading: "A memorable introduction that still respects scannability.",
-    copy: "The stack, overlaps, rotations, and parallax objects add personality while responsive layout rules keep the experience practical across screen sizes.",
-  },
-];
+const portfolioCopy =
+  "Building Healthcare AI at Innovaccer — designing intelligent systems that empower care teams and improve patient outcomes.";
 
 export default function App() {
   const pageRef = useRef<HTMLDivElement>(null);
   const pinRef = useRef<HTMLElement>(null);
-  const stackRef = useRef<HTMLDivElement>(null);
-  const progressRef = useRef<HTMLDivElement>(null);
-  const cardRefs = useRef<HTMLDivElement[]>([]);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const titleCardRef = useRef<HTMLDivElement>(null);
+  const projectRefs = useRef<HTMLDivElement[]>([]);
   const decorRefs = useRef<HTMLDivElement[]>([]);
 
   useEffect(() => {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const ctx = gsap.context(() => {
-      const visibleDeckPositions = cards.map((card, index) => ({
-        xPercent: index === 0 ? 0 : index % 2 === 0 ? -7 : 7,
-        yPercent: index * 5,
-        rotate: card.rotation * 0.72,
-        scale: 1 - index * 0.045,
-        opacity: 1 - index * 0.08,
-      }));
-
-      gsap.set(cardRefs.current, {
-        transformPerspective: 1400,
-        transformOrigin: "50% 68%",
-        willChange: "transform, opacity, filter",
-        filter: "blur(0px)",
+      gsap.set(stageRef.current, {
+        transformOrigin: "50% 50%",
+        willChange: "transform",
       });
 
-      gsap.set(stackRef.current, { transformOrigin: "50% 55%", willChange: "transform" });
-      gsap.set(progressRef.current, { scaleX: 0, transformOrigin: "0% 50%" });
+      gsap.set(titleCardRef.current, {
+        xPercent: 0,
+        yPercent: -3,
+        rotate: 0,
+        scale: 1,
+        opacity: 1,
+        zIndex: 30,
+        willChange: "transform, opacity",
+      });
 
-      cards.forEach((card, index) => {
-        const el = cardRefs.current[index];
-        gsap.set(el, {
-          xPercent: index % 2 === 0 ? 14 : -14,
-          yPercent: 58 + index * 8,
-          zIndex: cards.length - index,
-          rotate: index % 2 === 0 ? card.rotation - 7 : card.rotation + 7,
-          rotateX: index === 0 ? 13 : 7,
-          rotateY: index % 2 === 0 ? -14 : 14,
-          scale: 0.82 - index * 0.025,
-          opacity: 0,
-          filter: "blur(10px)",
-        });
+      const initialProjectStates = [
+        { xPercent: -4, yPercent: 8, rotate: -4, scale: 0.99, zIndex: 20, opacity: 1 },
+        { xPercent: 0, yPercent: 8, rotate: 2, scale: 0.97, zIndex: 10, opacity: 1 },
+        { xPercent: 3, yPercent: 10, rotate: 0, scale: 0.95, zIndex: 5, opacity: 0 },
+      ];
+
+      gsap.set(projectRefs.current, {
+        transformOrigin: "50% 50%",
+        willChange: "transform, opacity",
+      });
+
+      projectRefs.current.forEach((card, index) => {
+        gsap.set(card, initialProjectStates[index]);
       });
 
       const timeline = gsap.timeline({
         defaults: {
-          ease: reduceMotion ? "none" : "power3.out",
-          duration: reduceMotion ? 0.01 : 0.8,
+          ease: reduceMotion ? "none" : "power2.inOut",
+          duration: reduceMotion ? 0.01 : 1,
         },
         scrollTrigger: {
           trigger: pinRef.current,
           start: "top top",
-          end: () => `+=${Math.max(window.innerHeight * 3.8, 2600)}`,
-          scrub: reduceMotion ? true : 0.65,
+          end: () => `+=${Math.max(window.innerHeight * 4.2, 3200)}`,
+          scrub: reduceMotion ? true : 0.9,
           pin: true,
           anticipatePin: 1,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
-            const progress = self.progress.toFixed(3);
-            pinRef.current?.style.setProperty("--scroll-progress", progress);
-            gsap.set(progressRef.current, { scaleX: progress });
+            pinRef.current?.style.setProperty("--scroll-progress", self.progress.toFixed(3));
           },
         },
       });
 
       timeline
+        .to(titleCardRef.current, {
+          xPercent: 8,
+          yPercent: -170,
+          rotate: 8,
+          scale: 0.98,
+          duration: 0.9,
+        })
         .to(
-          stackRef.current,
+          projectRefs.current[0],
           {
-            rotateX: reduceMotion ? 0 : -2,
-            rotateY: reduceMotion ? 0 : 3,
-            yPercent: -2,
-            scale: 1.015,
+            xPercent: 0,
+            yPercent: 0,
+            rotate: projects[0].rotation,
+            scale: 1,
+            opacity: 1,
+            zIndex: 40,
+            duration: 0.9,
+          },
+          "<",
+        )
+        .to(stageRef.current, { yPercent: 3, duration: 0.45 })
+        .to(projectRefs.current[0], {
+          xPercent: 7,
+          yPercent: -160,
+          rotate: 7,
+          scale: 0.98,
+          zIndex: 12,
+          duration: 0.95,
+        })
+        .to(
+          projectRefs.current[1],
+          {
+            xPercent: 0,
+            yPercent: 0,
+            rotate: projects[1].rotation,
+            scale: 1,
+            opacity: 1,
+            zIndex: 45,
             duration: 0.95,
           },
-          0,
+          "<",
         )
         .to(
-          cardRefs.current,
+          projectRefs.current[2],
           {
-            opacity: (index) => visibleDeckPositions[index].opacity,
-            xPercent: (index) => visibleDeckPositions[index].xPercent,
-            yPercent: (index) => visibleDeckPositions[index].yPercent,
-            rotate: (index) => visibleDeckPositions[index].rotate,
-            rotateX: 0,
-            rotateY: 0,
-            scale: (index) => visibleDeckPositions[index].scale,
-            filter: "blur(0px)",
-            stagger: reduceMotion ? 0 : 0.08,
-            duration: 1.05,
+            xPercent: -2,
+            yPercent: 4,
+            rotate: projects[2].rotation,
+            scale: 0.97,
+            opacity: 1,
+            zIndex: 15,
+            duration: 0.95,
           },
-          0.12,
-        );
+          "<",
+        )
+        .to(stageRef.current, { yPercent: -1, duration: 0.45 })
+        .to(projectRefs.current[1], {
+          xPercent: -4,
+          yPercent: -166,
+          rotate: -3,
+          scale: 0.98,
+          zIndex: 14,
+          duration: 0.95,
+        })
+        .to(
+          projectRefs.current[2],
+          {
+            xPercent: 0,
+            yPercent: 0,
+            rotate: projects[2].rotation,
+            scale: 1,
+            opacity: 1,
+            zIndex: 50,
+            duration: 0.95,
+          },
+          "<",
+        )
+        .to(stageRef.current, { yPercent: -4, duration: 0.7 });
 
-      cards.forEach((card, activeIndex) => {
-        const previousCards = cardRefs.current.slice(0, activeIndex);
-        const nextCards = cardRefs.current.slice(activeIndex + 1);
-        const direction = activeIndex % 2 === 0 ? -1 : 1;
-
-        timeline
-          .to(
-            cardRefs.current[activeIndex],
-            {
-              xPercent: direction * 1.5,
-              yPercent: -6,
-              rotate: card.rotation * 0.25,
-              scale: 1.035,
-              opacity: 1,
-              zIndex: cards.length + activeIndex + 10,
-              filter: "blur(0px)",
-              duration: 0.72,
-            },
-            activeIndex === 0 ? ">-0.28" : ">-0.08",
-          )
-          .to(
-            previousCards,
-            {
-              xPercent: (index) => (index % 2 === 0 ? -13 : 13),
-              yPercent: (index) => 12 + index * 4,
-              rotate: (index) => cards[index].rotation * 0.55,
-              scale: (index) => 0.86 - index * 0.025,
-              opacity: 0.62,
-              filter: "blur(1.2px)",
-              duration: 0.72,
-            },
-            "<",
-          )
-          .to(
-            nextCards,
-            {
-              xPercent: (index) => (index % 2 === 0 ? 8 : -8),
-              yPercent: (index) => 12 + index * 6,
-              rotate: (index) => cards[activeIndex + index + 1].rotation * 0.72,
-              scale: (index) => 0.93 - index * 0.035,
-              opacity: (index) => 0.9 - index * 0.08,
-              filter: "blur(0.4px)",
-              duration: 0.72,
-            },
-            "<",
-          )
-          .to(
-            cardRefs.current[activeIndex],
-            {
-              xPercent: activeIndex % 2 === 0 ? -15 : 15,
-              yPercent: 10 + activeIndex * 4,
-              rotate: card.rotation,
-              scale: 0.9 - activeIndex * 0.022,
-              opacity: activeIndex === cards.length - 1 ? 1 : 0.68,
-              zIndex: cards.length - activeIndex,
-              duration: 0.68,
-            },
-            ">+0.1",
-          );
-      });
-
-      timeline.to(
-        cardRefs.current,
-        {
-          xPercent: (index) => (index - 1.5) * 11,
-          yPercent: (index) => index * 4,
-          rotate: (index) => cards[index].rotation,
-          scale: (index) => 0.94 - Math.abs(index - 1.5) * 0.015,
-          opacity: 1,
-          filter: "blur(0px)",
-          stagger: reduceMotion ? 0 : 0.035,
-          duration: 0.85,
-        },
-        ">-0.08",
-      );
-
-      timeline.to(stackRef.current, { yPercent: -5, rotateX: 0, rotateY: 0, scale: 0.99, duration: 0.65 }, "<");
-
-      decorRefs.current.forEach((el, index) => {
-        gsap.to(el, {
-          y: index % 2 === 0 ? -90 : 80,
-          x: index === 1 ? 34 : index === 2 ? -24 : 12,
-          rotate: index % 2 === 0 ? 10 : -12,
+      decorRefs.current.forEach((decor, index) => {
+        gsap.to(decor, {
+          yPercent: index % 2 === 0 ? -34 : 28,
+          xPercent: index % 3 === 0 ? 14 : -12,
           ease: "none",
           scrollTrigger: {
             trigger: pinRef.current,
             start: "top bottom",
             end: "bottom top",
-            scrub: reduceMotion ? true : 1.2,
+            scrub: reduceMotion ? true : 1.4,
           },
         });
       });
@@ -262,135 +203,139 @@ export default function App() {
     <main ref={pageRef} className="portfolio-page">
       <HeroSection />
 
-      <section ref={pinRef} className="card-pin-section" aria-label="Scroll driven case study highlights">
-        <div className="pin-copy">
-          <p className="section-kicker">Selected case study</p>
-          <h2>Scroll to pull each idea from the stack.</h2>
-          <p>
-            The section pins while a playful deck previews the project phases. The cards rotate,
-            overlap, and ease forward before the long-form story resumes.
-          </p>
-        </div>
+      <section ref={pinRef} className="portfolio-scroll" aria-label="Scroll through portfolio projects">
+        <DecorativeScene decorRefs={decorRefs} />
 
-        <DecorativeObjects decorRefs={decorRefs} />
-
-        <div ref={stackRef} className="case-card-stack" aria-live="polite">
-          <div className="stack-aura" aria-hidden="true" />
-          <div className="stack-progress-rail" aria-hidden="true">
-            <div ref={progressRef} className="stack-progress-fill" />
+        <div ref={stageRef} className="portfolio-stage">
+          <div ref={titleCardRef} className="portfolio-title-card">
+            <h2>Associate Product Designer</h2>
+            <p>{portfolioCopy}</p>
           </div>
-          {cards.map((card, index) => (
-            <CaseStudyCard
-              key={card.title}
-              card={card}
-              index={index}
-              setRef={(node) => {
-                if (node) cardRefs.current[index] = node;
+
+          {projects.map((project, index) => (
+            <article
+              key={project.label}
+              ref={(node) => {
+                if (node) projectRefs.current[index] = node;
               }}
-            />
+              className="project-card"
+              style={
+                {
+                  "--card-bg": project.color,
+                  "--card-text": project.textColor,
+                } as CSSProperties
+              }
+            >
+              <h3>{project.label}</h3>
+              <p>{project.title}</p>
+            </article>
           ))}
         </div>
       </section>
 
-      <CaseStudyContent />
+      <section className="case-study-content" id="case-study-content">
+        <p className="section-kicker">Full case study</p>
+        <h2>The normal content begins after the pinned reveal.</h2>
+      </section>
     </main>
   );
 }
 
 function HeroSection() {
   return (
-    <section className="hero-section">
-      <div className="hero-cloud hero-cloud-one" />
-      <div className="hero-cloud hero-cloud-two" />
-      <div className="hero-grid" />
-      <div className="hero-copy">
-        <p className="section-kicker">Portfolio concept</p>
-        <h1>A cheerful case study intro with a scroll-powered card stack.</h1>
-        <p>
-          Inspired by Maxima Therapy&apos;s bright, characterful energy: bold shapes, friendly copy,
-          and motion that makes the page feel hand-built.
-        </p>
-        <a href="#case-study-content" className="hero-link">
-          Skip to the case study
-        </a>
+    <section className="hero-section" aria-label="Associate Product Designer introduction">
+      <div className="hero-sun" aria-hidden="true" />
+      <div className="hero-blocks" aria-hidden="true">
+        <span className="hero-triangle" />
+        <span className="hero-square" />
+        <span className="hero-base" />
       </div>
-      <div className="hero-figure" aria-hidden="true">
-        <div className="hero-face">
-          <span />
-          <span />
+      <div className="hero-flower" aria-hidden="true">
+        <span />
+      </div>
+      <div className="hero-hills" aria-hidden="true" />
+      <Cloud className="hero-cloud hero-cloud-top" />
+      <Cloud className="hero-cloud hero-cloud-left" />
+      <div className="hero-person" aria-hidden="true">
+        <div className="cat">
+          <span className="cat-ear cat-ear-left" />
+          <span className="cat-ear cat-ear-right" />
+          <span className="cat-head" />
+          <span className="cat-body" />
+          <span className="cat-tail" />
         </div>
-        <div className="hero-smile" />
+        <div className="hair" />
+        <div className="face">
+          <span className="glasses glasses-left" />
+          <span className="glasses glasses-right" />
+          <span className="nose" />
+          <span className="mouth" />
+        </div>
+      </div>
+      <div className="hero-nameplate">
+        <h1>Associate Product Designer</h1>
       </div>
     </section>
   );
 }
 
-function DecorativeObjects({ decorRefs }: { decorRefs: React.MutableRefObject<HTMLDivElement[]> }) {
+function DecorativeScene({ decorRefs }: { decorRefs: MutableRefObject<HTMLDivElement[]> }) {
   return (
-    <div className="decor-layer" aria-hidden="true">
-      {["circle", "squiggle", "triangle", "pill"].map((shape, index) => (
-        <div
-          key={shape}
-          ref={(node) => {
-            if (node) decorRefs.current[index] = node;
-          }}
-          className={`decor-object decor-${shape}`}
-        />
-      ))}
+    <div className="decorative-scene" aria-hidden="true">
+      <Cloud className="cloud cloud-top" setRef={(node) => (decorRefs.current[0] = node)} />
+      <Cloud className="cloud cloud-left" setRef={(node) => (decorRefs.current[1] = node)} />
+      <Cloud className="cloud cloud-right" setRef={(node) => (decorRefs.current[2] = node)} />
+      <Cloud className="cloud cloud-bottom" setRef={(node) => (decorRefs.current[3] = node)} />
+      <Balloon variant="pink" className="balloon balloon-left" setRef={(node) => (decorRefs.current[4] = node)} />
+      <Balloon variant="blue" className="balloon balloon-blue" setRef={(node) => (decorRefs.current[5] = node)} />
+      <Balloon variant="orange" className="balloon balloon-orange" setRef={(node) => (decorRefs.current[6] = node)} />
+      <Balloon variant="heart" className="balloon balloon-heart" setRef={(node) => (decorRefs.current[7] = node)} />
     </div>
   );
 }
 
-function CaseStudyCard({
-  card,
-  index,
+function Cloud({
+  className,
   setRef,
 }: {
-  card: StudyCard;
-  index: number;
-  setRef: (node: HTMLDivElement | null) => void;
+  className: string;
+  setRef?: (node: HTMLDivElement) => void;
 }) {
   return (
-    <article ref={setRef} className="case-card" style={{ "--card-color": card.color, "--card-accent": card.accent } as React.CSSProperties}>
-      <div className="card-gloss" aria-hidden="true" />
-      <div className="card-badge" aria-hidden="true">{String(index + 1).padStart(2, "0")}</div>
-      <div className="card-visual" aria-hidden="true">
-        <PlaceholderArt index={index} />
-      </div>
-      <div className="card-copy">
-        <p>{card.eyebrow}</p>
-        <h3>{card.title}</h3>
-        <span>{card.body}</span>
-      </div>
-    </article>
+    <div
+      className={className}
+      ref={(node) => {
+        if (node && setRef) setRef(node);
+      }}
+    >
+      <span />
+      <span />
+      <span />
+      <span />
+    </div>
   );
 }
 
-function PlaceholderArt({ index }: { index: number }) {
+function Balloon({
+  variant,
+  className,
+  setRef,
+}: {
+  variant: "pink" | "blue" | "orange" | "heart";
+  className: string;
+  setRef?: (node: HTMLDivElement) => void;
+}) {
   return (
-    <svg viewBox="0 0 240 160" role="img" aria-label="Placeholder project visual">
-      <rect x="12" y="16" width="216" height="128" rx="28" fill="var(--card-accent)" />
-      <circle cx={index % 2 === 0 ? 74 : 166} cy="72" r="32" fill="var(--card-color)" />
-      <path d="M54 116 C92 86, 132 148, 188 98" fill="none" stroke="#1f1b2d" strokeWidth="10" strokeLinecap="round" />
-      <path d="M158 42 l34 18 -34 18z" fill="#fdcb40" />
-    </svg>
-  );
-}
-
-function CaseStudyContent() {
-  return (
-    <section id="case-study-content" className="case-study-content">
-      <p className="section-kicker">Full case study</p>
-      <h2>The normal content begins after the pinned reveal.</h2>
-      <div className="content-grid">
-        {contentBlocks.map((block) => (
-          <article key={block.label} className="content-card">
-            <p>{block.label}</p>
-            <h3>{block.heading}</h3>
-            <span>{block.copy}</span>
-          </article>
-        ))}
-      </div>
-    </section>
+    <div
+      className={`${className} balloon-${variant}`}
+      ref={(node) => {
+        if (node && setRef) setRef(node);
+      }}
+    >
+      <span className="balloon-envelope" />
+      <span className="balloon-string balloon-string-left" />
+      <span className="balloon-string balloon-string-right" />
+      <span className="balloon-basket" />
+    </div>
   );
 }
