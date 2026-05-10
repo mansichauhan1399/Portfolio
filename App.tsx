@@ -1,199 +1,184 @@
 import { useEffect, useRef } from "react";
-import type { CSSProperties, MutableRefObject } from "react";
+import type { CSSProperties } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-type ProjectCard = {
-  label: string;
+type PortfolioCard = {
+  eyebrow: string;
   title: string;
-  color: string;
-  textColor: string;
+  description: string;
+  background: string;
+  foreground: string;
+  accent: string;
   rotation: number;
 };
 
-const projects: ProjectCard[] = [
+const portfolioCards: PortfolioCard[] = [
   {
-    label: "PROJECT 1",
-    title: "Placeholder",
-    color: "#eb70c7",
-    textColor: "#65328a",
+    eyebrow: "PROJECT 1",
+    title: "Healthcare AI Platform",
+    description: "Designing intelligent workflows that help care teams understand patient risk and act faster.",
+    background: "#eb70c7",
+    foreground: "#4f2576",
+    accent: "#fff4b8",
     rotation: -3.5,
   },
   {
-    label: "PROJECT 2",
-    title: "Placeholder",
-    color: "#126cf5",
-    textColor: "#ffd03f",
-    rotation: 2.1,
+    eyebrow: "PROJECT 2",
+    title: "Care Team Command Center",
+    description: "A focused operating layer for surfacing next-best actions across complex clinical programs.",
+    background: "#126cf5",
+    foreground: "#ffd03f",
+    accent: "#ffffff",
+    rotation: 2.5,
   },
   {
-    label: "PROJECT 3",
-    title: "Placeholder",
-    color: "#fffdf7",
-    textColor: "#ffd03f",
-    rotation: -1.2,
+    eyebrow: "PROJECT 3",
+    title: "Patient Insights System",
+    description: "Turning dense healthcare data into confident, scannable product experiences.",
+    background: "#fffdf7",
+    foreground: "#d69b00",
+    accent: "#126cf5",
+    rotation: -1.5,
   },
 ];
-
-const portfolioCopy =
-  "Building Healthcare AI at Innovaccer — designing intelligent systems that empower care teams and improve patient outcomes.";
 
 export default function App() {
   const pageRef = useRef<HTMLDivElement>(null);
   const pinRef = useRef<HTMLElement>(null);
-  const stageRef = useRef<HTMLDivElement>(null);
-  const titleCardRef = useRef<HTMLDivElement>(null);
-  const projectRefs = useRef<HTMLDivElement[]>([]);
-  const decorRefs = useRef<HTMLDivElement[]>([]);
+  const deckRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<HTMLDivElement[]>([]);
 
   useEffect(() => {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const ctx = gsap.context(() => {
-      gsap.set(stageRef.current, {
+      gsap.set(deckRef.current, {
+        transformPerspective: 1600,
+        transformStyle: "preserve-3d",
         transformOrigin: "50% 50%",
         willChange: "transform",
       });
 
-      gsap.set(titleCardRef.current, {
-        xPercent: 0,
-        yPercent: -3,
-        rotate: 0,
-        scale: 1,
-        opacity: 1,
-        zIndex: 30,
-        willChange: "transform, opacity",
+      gsap.set(cardRefs.current, {
+        transformOrigin: "50% 64%",
+        transformStyle: "preserve-3d",
+        willChange: "transform, opacity, filter",
       });
 
-      const initialProjectStates = [
-        { xPercent: -4, yPercent: 8, rotate: -4, scale: 0.99, zIndex: 20, opacity: 1 },
-        { xPercent: 0, yPercent: 8, rotate: 2, scale: 0.97, zIndex: 10, opacity: 1 },
-        { xPercent: 3, yPercent: 10, rotate: 0, scale: 0.95, zIndex: 5, opacity: 0 },
-      ];
-
-      gsap.set(projectRefs.current, {
-        transformOrigin: "50% 50%",
-        willChange: "transform, opacity",
-      });
-
-      projectRefs.current.forEach((card, index) => {
-        gsap.set(card, initialProjectStates[index]);
+      cardRefs.current.forEach((card, index) => {
+        gsap.set(card, {
+          xPercent: index === 0 ? 0 : index % 2 === 0 ? -7 : 7,
+          yPercent: index === 0 ? 34 : 10 + index * 7,
+          z: index === 0 ? -180 : -260 - index * 90,
+          rotateX: index === 0 ? -72 : -10,
+          rotateY: index === 0 ? 12 : index % 2 === 0 ? -7 : 7,
+          rotateZ: index === 0 ? -10 : portfolioCards[index].rotation,
+          scale: index === 0 ? 0.82 : 0.88 - index * 0.04,
+          opacity: index === 0 ? 0 : 0.38 - index * 0.06,
+          filter: index === 0 ? "blur(10px)" : "blur(2px)",
+          zIndex: portfolioCards.length - index,
+        });
       });
 
       const timeline = gsap.timeline({
         defaults: {
-          ease: reduceMotion ? "none" : "power2.inOut",
+          ease: reduceMotion ? "none" : "power3.inOut",
           duration: reduceMotion ? 0.01 : 1,
         },
         scrollTrigger: {
           trigger: pinRef.current,
           start: "top top",
-          end: () => `+=${Math.max(window.innerHeight * 4.2, 3200)}`,
-          scrub: reduceMotion ? true : 0.9,
+          end: () => `+=${Math.max(window.innerHeight * 3.8, 2800)}`,
+          scrub: reduceMotion ? true : 0.85,
           pin: true,
           anticipatePin: 1,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
-            pinRef.current?.style.setProperty("--scroll-progress", self.progress.toFixed(3));
+            pinRef.current?.style.setProperty("--stack-progress", self.progress.toFixed(3));
           },
         },
       });
 
       timeline
-        .to(titleCardRef.current, {
-          xPercent: 8,
-          yPercent: -170,
-          rotate: 8,
-          scale: 0.98,
-          duration: 0.9,
+        .to(cardRefs.current[0], {
+          xPercent: 0,
+          yPercent: 0,
+          z: 80,
+          rotateX: 0,
+          rotateY: 0,
+          rotateZ: portfolioCards[0].rotation,
+          scale: 1,
+          opacity: 1,
+          filter: "blur(0px)",
+          zIndex: 40,
+          duration: 1.15,
         })
-        .to(
-          projectRefs.current[0],
-          {
-            xPercent: 0,
-            yPercent: 0,
-            rotate: projects[0].rotation,
-            scale: 1,
-            opacity: 1,
-            zIndex: 40,
-            duration: 0.9,
-          },
-          "<",
-        )
-        .to(stageRef.current, { yPercent: 3, duration: 0.45 })
-        .to(projectRefs.current[0], {
-          xPercent: 7,
-          yPercent: -160,
-          rotate: 7,
-          scale: 0.98,
-          zIndex: 12,
-          duration: 0.95,
-        })
-        .to(
-          projectRefs.current[1],
-          {
-            xPercent: 0,
-            yPercent: 0,
-            rotate: projects[1].rotation,
-            scale: 1,
-            opacity: 1,
-            zIndex: 45,
-            duration: 0.95,
-          },
-          "<",
-        )
-        .to(
-          projectRefs.current[2],
-          {
-            xPercent: -2,
-            yPercent: 4,
-            rotate: projects[2].rotation,
-            scale: 0.97,
-            opacity: 1,
-            zIndex: 15,
-            duration: 0.95,
-          },
-          "<",
-        )
-        .to(stageRef.current, { yPercent: -1, duration: 0.45 })
-        .to(projectRefs.current[1], {
-          xPercent: -4,
-          yPercent: -166,
-          rotate: -3,
-          scale: 0.98,
-          zIndex: 14,
-          duration: 0.95,
-        })
-        .to(
-          projectRefs.current[2],
-          {
-            xPercent: 0,
-            yPercent: 0,
-            rotate: projects[2].rotation,
-            scale: 1,
-            opacity: 1,
-            zIndex: 50,
-            duration: 0.95,
-          },
-          "<",
-        )
-        .to(stageRef.current, { yPercent: -4, duration: 0.7 });
+        .to(deckRef.current, { rotateX: -2, rotateY: 2, scale: 1.015, duration: 0.65 }, "<")
+        .to({}, { duration: 0.2 });
 
-      decorRefs.current.forEach((decor, index) => {
-        gsap.to(decor, {
-          yPercent: index % 2 === 0 ? -34 : 28,
-          xPercent: index % 3 === 0 ? 14 : -12,
-          ease: "none",
-          scrollTrigger: {
-            trigger: pinRef.current,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: reduceMotion ? true : 1.4,
-          },
-        });
+      portfolioCards.slice(1).forEach((card, index) => {
+        const activeIndex = index + 1;
+        const olderCards = cardRefs.current.slice(0, activeIndex);
+        const upcomingCards = cardRefs.current.slice(activeIndex + 1);
+
+        timeline
+          .to(
+            olderCards,
+            {
+              xPercent: (olderIndex) => (olderIndex % 2 === 0 ? -13 : 13),
+              yPercent: (olderIndex) => 14 + olderIndex * 7,
+              z: (olderIndex) => -120 - olderIndex * 70,
+              rotateX: -6,
+              rotateY: (olderIndex) => (olderIndex % 2 === 0 ? -5 : 5),
+              rotateZ: (olderIndex) => portfolioCards[olderIndex].rotation * 0.8,
+              scale: (olderIndex) => 0.86 - olderIndex * 0.035,
+              opacity: 0.58,
+              filter: "blur(1.1px)",
+              zIndex: (olderIndex) => 12 - olderIndex,
+              duration: 0.9,
+            },
+            ">",
+          )
+          .to(
+            cardRefs.current[activeIndex],
+            {
+              xPercent: 0,
+              yPercent: 0,
+              z: 100,
+              rotateX: 0,
+              rotateY: 0,
+              rotateZ: card.rotation,
+              scale: 1,
+              opacity: 1,
+              filter: "blur(0px)",
+              zIndex: 45 + activeIndex,
+              duration: 0.95,
+            },
+            "<",
+          )
+          .to(
+            upcomingCards,
+            {
+              xPercent: (upcomingIndex) => (upcomingIndex % 2 === 0 ? 7 : -7),
+              yPercent: (upcomingIndex) => 13 + upcomingIndex * 7,
+              z: (upcomingIndex) => -240 - upcomingIndex * 80,
+              rotateX: -8,
+              rotateY: (upcomingIndex) => (upcomingIndex % 2 === 0 ? 6 : -6),
+              scale: (upcomingIndex) => 0.88 - upcomingIndex * 0.04,
+              opacity: (upcomingIndex) => 0.42 - upcomingIndex * 0.08,
+              filter: "blur(2px)",
+              duration: 0.95,
+            },
+            "<",
+          )
+          .to(deckRef.current, { rotateX: index % 2 === 0 ? 1 : -1, rotateY: index % 2 === 0 ? -2 : 2, duration: 0.45 }, "<")
+          .to({}, { duration: 0.18 });
       });
+
+      timeline.to(deckRef.current, { rotateX: 0, rotateY: 0, scale: 0.99, duration: 0.7 });
     }, pageRef);
 
     return () => ctx.revert();
@@ -202,40 +187,41 @@ export default function App() {
   return (
     <main ref={pageRef} className="portfolio-page">
       <HeroSection />
-
-      <section ref={pinRef} className="portfolio-scroll" aria-label="Scroll through portfolio projects">
-        <DecorativeScene decorRefs={decorRefs} />
-
-        <div ref={stageRef} className="portfolio-stage">
-          <div ref={titleCardRef} className="portfolio-title-card">
-            <h2>Associate Product Designer</h2>
-            <p>{portfolioCopy}</p>
-          </div>
-
-          {projects.map((project, index) => (
+      <section ref={pinRef} className="stack-section" aria-label="Pinned portfolio project deck">
+        <div className="stack-heading" aria-hidden="true">
+          <span>Selected work</span>
+        </div>
+        <div ref={deckRef} className="portfolio-deck">
+          {portfolioCards.map((card, index) => (
             <article
-              key={project.label}
+              key={card.eyebrow}
               ref={(node) => {
-                if (node) projectRefs.current[index] = node;
+                if (node) cardRefs.current[index] = node;
               }}
-              className="project-card"
+              className="portfolio-card"
               style={
                 {
-                  "--card-bg": project.color,
-                  "--card-text": project.textColor,
+                  "--card-bg": card.background,
+                  "--card-fg": card.foreground,
+                  "--card-accent": card.accent,
                 } as CSSProperties
               }
             >
-              <h3>{project.label}</h3>
-              <p>{project.title}</p>
+              <div className="portfolio-card__shine" aria-hidden="true" />
+              <p>{card.eyebrow}</p>
+              <h2>{card.title}</h2>
+              <span>{card.description}</span>
+              <div className="portfolio-card__meta" aria-hidden="true">
+                <small>Product strategy</small>
+                <small>UX systems</small>
+              </div>
             </article>
           ))}
         </div>
       </section>
-
       <section className="case-study-content" id="case-study-content">
         <p className="section-kicker">Full case study</p>
-        <h2>The normal content begins after the pinned reveal.</h2>
+        <h2>The normal content begins after the cinematic deck reveal.</h2>
       </section>
     </main>
   );
@@ -244,98 +230,33 @@ export default function App() {
 function HeroSection() {
   return (
     <section className="hero-section" aria-label="Associate Product Designer introduction">
-      <div className="hero-sun" aria-hidden="true" />
-      <div className="hero-blocks" aria-hidden="true">
-        <span className="hero-triangle" />
-        <span className="hero-square" />
-        <span className="hero-base" />
-      </div>
-      <div className="hero-flower" aria-hidden="true">
-        <span />
-      </div>
-      <div className="hero-hills" aria-hidden="true" />
-      <Cloud className="hero-cloud hero-cloud-top" />
-      <Cloud className="hero-cloud hero-cloud-left" />
-      <div className="hero-person" aria-hidden="true">
+      <div className="hero-cloud hero-cloud--top" aria-hidden="true"><span /><span /><span /></div>
+      <div className="hero-cloud hero-cloud--side" aria-hidden="true"><span /><span /><span /></div>
+      <div className="hero-shape hero-shape--triangle" aria-hidden="true" />
+      <div className="hero-shape hero-shape--sun" aria-hidden="true" />
+      <div className="hero-illustration" aria-hidden="true">
         <div className="cat">
-          <span className="cat-ear cat-ear-left" />
-          <span className="cat-ear cat-ear-right" />
-          <span className="cat-head" />
+          <span className="cat-ear cat-ear--left" />
+          <span className="cat-ear cat-ear--right" />
           <span className="cat-body" />
           <span className="cat-tail" />
+          <span className="cat-face" />
         </div>
-        <div className="hair" />
-        <div className="face">
-          <span className="glasses glasses-left" />
-          <span className="glasses glasses-right" />
-          <span className="nose" />
-          <span className="mouth" />
+        <div className="person">
+          <div className="hair" />
+          <div className="face">
+            <span className="eye eye--left" />
+            <span className="eye eye--right" />
+            <span className="glasses glasses--left" />
+            <span className="glasses glasses--right" />
+            <span className="mouth" />
+          </div>
         </div>
       </div>
-      <div className="hero-nameplate">
+      <div className="hero-title-card">
+        <p>Portfolio</p>
         <h1>Associate Product Designer</h1>
       </div>
     </section>
-  );
-}
-
-function DecorativeScene({ decorRefs }: { decorRefs: MutableRefObject<HTMLDivElement[]> }) {
-  return (
-    <div className="decorative-scene" aria-hidden="true">
-      <Cloud className="cloud cloud-top" setRef={(node) => (decorRefs.current[0] = node)} />
-      <Cloud className="cloud cloud-left" setRef={(node) => (decorRefs.current[1] = node)} />
-      <Cloud className="cloud cloud-right" setRef={(node) => (decorRefs.current[2] = node)} />
-      <Cloud className="cloud cloud-bottom" setRef={(node) => (decorRefs.current[3] = node)} />
-      <Balloon variant="pink" className="balloon balloon-left" setRef={(node) => (decorRefs.current[4] = node)} />
-      <Balloon variant="blue" className="balloon balloon-blue" setRef={(node) => (decorRefs.current[5] = node)} />
-      <Balloon variant="orange" className="balloon balloon-orange" setRef={(node) => (decorRefs.current[6] = node)} />
-      <Balloon variant="heart" className="balloon balloon-heart" setRef={(node) => (decorRefs.current[7] = node)} />
-    </div>
-  );
-}
-
-function Cloud({
-  className,
-  setRef,
-}: {
-  className: string;
-  setRef?: (node: HTMLDivElement) => void;
-}) {
-  return (
-    <div
-      className={className}
-      ref={(node) => {
-        if (node && setRef) setRef(node);
-      }}
-    >
-      <span />
-      <span />
-      <span />
-      <span />
-    </div>
-  );
-}
-
-function Balloon({
-  variant,
-  className,
-  setRef,
-}: {
-  variant: "pink" | "blue" | "orange" | "heart";
-  className: string;
-  setRef?: (node: HTMLDivElement) => void;
-}) {
-  return (
-    <div
-      className={`${className} balloon-${variant}`}
-      ref={(node) => {
-        if (node && setRef) setRef(node);
-      }}
-    >
-      <span className="balloon-envelope" />
-      <span className="balloon-string balloon-string-left" />
-      <span className="balloon-string balloon-string-right" />
-      <span className="balloon-basket" />
-    </div>
   );
 }
