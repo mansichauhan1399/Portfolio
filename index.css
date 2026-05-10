@@ -134,14 +134,17 @@ a {
   0% { opacity: 0; transform: translateY(42px) scale(.94); }
   72% { opacity: 1; transform: translateY(-4px) scale(1.015); }
   100% { opacity: 1; transform: translateY(0) scale(1); }
+}
 @keyframes hero-character-breathe {
   from { transform: translateY(0) scale(1); }
   to { transform: translateY(-8px) scale(1.006); }
+}
 @keyframes hero-cat-drop {
   0% { opacity: 0; transform: translateY(-92px) rotate(-5deg) scale(.92); }
   62% { opacity: 1; transform: translateY(9px) rotate(2deg) scale(1.025); }
   82% { transform: translateY(-4px) rotate(-1deg) scale(.995); }
   100% { opacity: 1; transform: translateY(0) rotate(0) scale(1); }
+}
 @keyframes hero-cat-bob {
   from { transform: translateY(0) rotate(-.8deg); }
   to { transform: translateY(-7px) rotate(1deg); }
