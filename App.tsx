@@ -1,9 +1,17 @@
-import { useRef, useState } from "react";
-import { motion, useScroll, useTransform, useMotionValueEvent } from "motion/react";
+import { useRef } from "react";
+import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
 
 export default function App() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ container: containerRef });
+  const shouldReduceMotion = useReducedMotion();
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 130,
+    damping: 28,
+    mass: 0.18,
+    restDelta: 0.001,
+  });
+  const cardProgress = shouldReduceMotion ? scrollYProgress : smoothProgress;
 
   // Hero layer moves up fast (1x speed)
   const heroY = useTransform(scrollYProgress, [0, 0.2], [0, -840]);
@@ -11,48 +19,47 @@ export default function App() {
   // Background (clouds/balloons) moves up slower (parallax)
   const bgY = useTransform(scrollYProgress, [0, 1], [888, -1568]);
   
-  // Cards peel off one by one
-  // Card 1 (red - Component, top card): stays pinned, flips
-  const card1Y = useTransform(scrollYProgress, [0, 0.15], [0, -486]);
-  // Card 1 flip animation: 0%→normal, 30%→tilt, 50%→full flip
-  const card1RotateY = useTransform(scrollYProgress, [0, 0.3, 0.5], [0, -15, -180]);
-  const card1Scale = useTransform(scrollYProgress, [0, 0.3, 0.5], [1, 0.97, 0.95]);
-  const card1Z = useTransform(scrollYProgress, [0, 0.3, 0.5], [0, 20, 0]);
+  // Selected-work cards: one pinned, layered stack that reveals through scroll.
+  // The first card enters alone, flips away, then exposes the stacked cards below.
+  const cardStackY = useTransform(cardProgress, [0, 0.13, 0.16], [170, -486, -486]);
+  const cardStackScale = useTransform(cardProgress, [0, 0.13, 0.82], [0.98, 1, 0.99]);
 
-  // Card 2 (pink - Component1): moves from 614 to off-screen  
-  const card2Y = useTransform(scrollYProgress, [0, 0.15, 0.35, 0.55], [0, -454, -454, -1038]);
-  // Card 2 (pink) flip - smooth Y-axis rotation while pinned (0.15→0.35)
-  const card2RotateY = useTransform(scrollYProgress, [0.15, 0.22, 0.35], [0, -25, -180]);
-  // Card 2: front card z-index drops to back after flip completes
-  const card2FrontZ = useTransform(scrollYProgress, [0.33, 0.36], [4, 0]);
-  // Card 2: stacked cards hidden until front card rotates past 90deg
-  const card2StackOpacity = useTransform(scrollYProgress, [0.27, 0.28], [0, 1]);
+  const card1RotateY = useTransform(
+    cardProgress,
+    [0.16, 0.25, 0.36],
+    shouldReduceMotion ? [0, 0, 0] : [0, -92, -180],
+  );
+  const card1RotateZ = useTransform(cardProgress, [0.16, 0.25, 0.36], shouldReduceMotion ? [0, 0, 0] : [0, -5, -10]);
+  const card1Opacity = useTransform(cardProgress, shouldReduceMotion ? [0.30, 0.34] : [0.32, 0.38], [1, 0]);
 
-  // Track whether stacked cards should be shown (React state for conditional rendering)
-  const [showCard2Stack, setShowCard2Stack] = useState(false);
-  useMotionValueEvent(scrollYProgress, "change", (v) => {
-    setShowCard2Stack(v >= 0.27);
-  });
+  const stackOpacity = useTransform(cardProgress, shouldReduceMotion ? [0.22, 0.30] : [0.25, 0.34], [0, 1]);
+  const card2X = useTransform(cardProgress, [0.28, 0.40, 0.60], [0, -22, -54]);
+  const card2Y = useTransform(cardProgress, [0.28, 0.40, 0.60], [0, 8, 16]);
+  const card2RotateZ = useTransform(cardProgress, [0.28, 0.40, 0.60], [0, -3, -7]);
+  const card2Scale = useTransform(cardProgress, [0.28, 0.60], [0.99, 0.97]);
+  const card2RotateY = useTransform(
+    cardProgress,
+    [0.42, 0.52, 0.64],
+    shouldReduceMotion ? [0, 0, 0] : [0, -94, -180],
+  );
+  const card2Opacity = useTransform(cardProgress, [0.28, 0.34, 0.60, 0.66], [0, 1, 1, 0]);
 
-  // Stacked cards behind card1 - appear after flip (70%→100%)
-  const stackOpacity = useTransform(scrollYProgress, [0.65, 0.75], [0, 1]);
-  const stack1X = useTransform(scrollYProgress, [0.7, 1.0], [0, -40]);
-  const stack1Y = useTransform(scrollYProgress, [0.7, 1.0], [0, 10]);
-  const stack1Rotate = useTransform(scrollYProgress, [0.7, 1.0], [0, -8]);
-  const stack1Scale = useTransform(scrollYProgress, [0.7, 1.0], [1, 0.95]);
-  const stack2X = useTransform(scrollYProgress, [0.7, 1.0], [0, 40]);
-  const stack2Y = useTransform(scrollYProgress, [0.7, 1.0], [0, 10]);
-  const stack2Rotate = useTransform(scrollYProgress, [0.7, 1.0], [0, 8]);
-  const stack2Scale = useTransform(scrollYProgress, [0.7, 1.0], [1, 0.95]);
-  const stack3X = useTransform(scrollYProgress, [0.75, 1.0], [0, -70]);
-  const stack3Y = useTransform(scrollYProgress, [0.75, 1.0], [0, 20]);
-  const stack3Rotate = useTransform(scrollYProgress, [0.75, 1.0], [0, -12]);
-  const stack3Scale = useTransform(scrollYProgress, [0.75, 1.0], [1, 0.9]);
+  const card3Opacity = useTransform(cardProgress, [0.46, 0.54], [0, 1]);
+  const card3X = useTransform(cardProgress, [0.46, 0.64, 0.82], [0, 26, 62]);
+  const card3Y = useTransform(cardProgress, [0.46, 0.64, 0.82], [0, 13, 22]);
+  const card3RotateZ = useTransform(cardProgress, [0.46, 0.64, 0.82], [0, 3, 7]);
+  const card3Scale = useTransform(cardProgress, [0.46, 0.82], [0.98, 0.955]);
+  const card3RotateY = useTransform(
+    cardProgress,
+    [0.66, 0.76, 0.88],
+    shouldReduceMotion ? [0, 0, 0] : [0, -94, -180],
+  );
+  const card3FlipOpacity = useTransform(cardProgress, [0.82, 0.89], [1, 0]);
 
-  // Card 3 (blue - Component2): stays then moves
-  const card3Y = useTransform(scrollYProgress, [0, 0.15, 0.55, 0.75], [0, -454, -454, -1014]);
-  // Card 4 (white - Component3): stays visible longest
-  const card4Y = useTransform(scrollYProgress, [0, 0.15, 0.75, 0.95], [0, -454, -454, -454]);
+  const card4Opacity = useTransform(cardProgress, [0.72, 0.82], [0, 1]);
+  const card4X = useTransform(cardProgress, [0.72, 0.94], [0, -12]);
+  const card4Y = useTransform(cardProgress, [0.72, 0.94], [0, 10]);
+  const card4RotateZ = useTransform(cardProgress, [0.72, 0.94], [0, -2]);
 
   // Clouds in hero section drift continuously (handled by CSS animation below)
   // Orange decoration opacity
@@ -134,95 +141,93 @@ export default function App() {
             <Group39 />
           </motion.div>
 
-          {/* Cards layer - each card peels off independently */}
+          {/* Cards layer - pinned stack reveal that keeps the original card design intact */}
           <motion.div
-            className="absolute flex h-[392.261px] items-center justify-center left-[489.54px] top-[622.86px] w-[450.545px] z-[7]"
-            style={{ y: card4Y }}
+            className="absolute left-[492px] top-[631px] h-[380px] w-[440px] z-[10]"
+            style={{
+              y: cardStackY,
+              scale: cardStackScale,
+              perspective: 1400,
+              transformStyle: "preserve-3d",
+              transformOrigin: "50% 50%",
+            }}
           >
-            <div className="flex-none rotate-[-1.62deg]">
-              <CardWhite />
-            </div>
-          </motion.div>
-
-          <motion.div
-            className="absolute flex h-[397.515px] items-center justify-center left-[487.29px] top-[620.24px] w-[455.035px] z-[8]"
-            style={{ y: card3Y }}
-          >
-            <div className="flex-none rotate-[2.32deg]">
-              <CardBlue />
-            </div>
-          </motion.div>
-
-          <motion.div
-            className="absolute flex h-[409.987px] items-center justify-center left-[482px] top-[614px] w-[465.621px] z-[9]"
-            style={{ y: card2Y, perspective: 1200 }}
-          >
-            {/* Stacked cards - not rendered until front card flips past 90deg */}
-            {showCard2Stack && (
-              <>
-                <div
-                  className="absolute flex-none"
-                  style={{ zIndex: 1 }}
-                >
-                  <CardWhite />
-                </div>
-                <div
-                  className="absolute flex-none"
-                  style={{ zIndex: 2 }}
-                >
-                  <CardBlue />
-                </div>
-                <div
-                  className="absolute flex-none"
-                  style={{ zIndex: 3 }}
-                >
-                  <CardRed />
-                </div>
-              </>
-            )}
-            {/* Front card - flips on Y-axis; starts in front, moves to back after flip */}
             <motion.div
-              className="flex-none"
+              className="absolute inset-0 flex items-center justify-center"
               style={{
+                x: card4X,
+                y: card4Y,
+                rotate: card4RotateZ,
+                opacity: card4Opacity,
+                zIndex: 1,
+                transformStyle: "preserve-3d",
+              }}
+            >
+              <CardWhite />
+            </motion.div>
+
+            <motion.div
+              className="absolute inset-0 flex items-center justify-center"
+              style={{
+                x: card3X,
+                y: card3Y,
+                rotate: card3RotateZ,
+                rotateY: card3RotateY,
+                scale: card3Scale,
+                opacity: card3Opacity,
+                zIndex: 2,
+                transformOrigin: "50% 50%",
+                transformStyle: "preserve-3d",
+                backfaceVisibility: "hidden",
+              }}
+            >
+              <motion.div style={{ opacity: card3FlipOpacity }}>
+                <CardBlue />
+              </motion.div>
+            </motion.div>
+
+            <motion.div
+              className="absolute inset-0 flex items-center justify-center"
+              style={{
+                x: card2X,
+                y: card2Y,
+                rotate: card2RotateZ,
                 rotateY: card2RotateY,
-                zIndex: card2FrontZ,
+                scale: card2Scale,
+                opacity: card2Opacity,
+                zIndex: 3,
+                transformOrigin: "50% 50%",
                 transformStyle: "preserve-3d",
                 backfaceVisibility: "hidden",
               }}
             >
               <CardPink />
             </motion.div>
-          </motion.div>
 
-          <motion.div
-            className="absolute left-[492px] top-[631px] w-[465.621px] z-[10]"
-            style={{ y: card1Y, perspective: 1200 }}
-          >
-            {/* Stacked cards behind - appear after flip */}
             <motion.div
               className="absolute inset-0 flex items-center justify-center"
-              style={{ x: stack3X, y: stack3Y, rotate: stack3Rotate, scale: stack3Scale, opacity: stackOpacity }}
-            >
-              <CardWhite />
-            </motion.div>
-            <motion.div
-              className="absolute inset-0 flex items-center justify-center"
-              style={{ x: stack1X, y: stack1Y, rotate: stack1Rotate, scale: stack1Scale, opacity: stackOpacity }}
-            >
-              <CardBlue />
-            </motion.div>
-            <motion.div
-              className="absolute inset-0 flex items-center justify-center"
-              style={{ x: stack2X, y: stack2Y, rotate: stack2Rotate, scale: stack2Scale, opacity: stackOpacity }}
-            >
-              <CardPink />
-            </motion.div>
-            {/* Main red card with 3D flip */}
-            <motion.div
-              style={{ rotateY: card1RotateY, scale: card1Scale, z: card1Z, transformStyle: "preserve-3d" }}
+              style={{
+                rotateY: card1RotateY,
+                rotate: card1RotateZ,
+                opacity: card1Opacity,
+                zIndex: 4,
+                transformOrigin: "50% 50%",
+                transformStyle: "preserve-3d",
+                backfaceVisibility: "hidden",
+              }}
             >
               <CardRed />
             </motion.div>
+
+            <motion.div
+              aria-hidden="true"
+              className="absolute inset-0 rounded-[20px]"
+              style={{
+                opacity: stackOpacity,
+                boxShadow: "0 28px 70px rgba(48, 23, 51, 0.16)",
+                zIndex: 0,
+              }}
+            />
           </motion.div>
         </div>
       </div>
@@ -232,11 +237,11 @@ export default function App() {
 
 // ===== Sub-components built from Wireframe3-3 SVG paths =====
 // We import from the Wireframe3-3 svg paths
-import svgPaths from "../imports/Wireframe3-3/svg-nbcum20fjz";
-import svgPathsW7 from "../imports/Wireframe7-1/svg-o04jntdhz2";
-import imgReadingEyeglasses from "../imports/Wireframe3-3/5b74b62fe744bfd03cdbcbe33028b5687cddb509.png";
-import Group40 from "../imports/Group40-1/Group40";
-import Group39 from "../imports/Group39-1/Group39-13-266";
+import svgPaths from "./svg-nbcum20fjz";
+import svgPathsW7 from "./svg-o04jntdhz2";
+import imgReadingEyeglasses from "./5b74b62fe744bfd03cdbcbe33028b5687cddb509.png";
+import Group40 from "./Group40";
+import Group39 from "./Group39-13-266";
 
 function CloudsLayer() {
   return (
