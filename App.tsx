@@ -256,126 +256,40 @@ function YellowPolygon() {
   );
 }
 
-function FlowerComponent() {
-  return (
-    <div className="relative size-full">
-      <div className="absolute inset-[2.36%_0_-2.36%_0]">
-        <svg className="absolute block inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 234.293 338.5">
-          <g>
-            <path d={svgPaths.p2214e680} fill="#05D7D2" />
-            <path d={svgPaths.p1804f400} fill="#FFC502" />
-            <rect fill="#573DDE" height="150.444" width="25.2848" x="104.709" y="188.056" />
-            <path d={svgPaths.p12caea00} fill="#FF2700" />
-          </g>
-        </svg>
-      </div>
-    </div>
+      <CaseStudyContent />
+    </main>
   );
 }
 
-function CharacterLayer() {
+function HeroSection() {
   return (
-    <>
-      {/* Character (Group3 content) */}
-      <div className="absolute flex h-[410.353px] items-center justify-center left-[481px] top-[279px] w-[435.824px]">
-        <div className="flex-none rotate-[1.01deg]">
-          <div className="h-[402.829px] relative w-[428.764px]">
-            <div className="absolute inset-[-0.1%_0_0_0]">
-              <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 428.764 403.25">
-                <g>
-                  <path d={svgPaths.p2ab74100} fill="#016DFF" />
-                  <path d={svgPaths.p2e677a00} fill="#FCD9C4" />
-                  <path d={svgPaths.p1c091780} fill="#016DFF" stroke="#016DFF" strokeWidth="0.841352" />
-                  <path d={svgPaths.p2581a780} fill="#016DFF" stroke="#016DFF" strokeWidth="0.841352" />
-                </g>
-              </svg>
-            </div>
-          </div>
-        </div>
+    <section className="hero-section">
+      <div className="hero-cloud hero-cloud-one" />
+      <div className="hero-cloud hero-cloud-two" />
+      <div className="hero-grid" />
+      <div className="hero-copy">
+        <p className="section-kicker">Portfolio concept</p>
+        <h1>A cheerful case study intro with a scroll-powered card stack.</h1>
+        <p>
+          Inspired by Maxima Therapy&apos;s bright, characterful energy: bold shapes, friendly copy,
+          and motion that makes the page feel hand-built.
+        </p>
+        <a href="#case-study-content" className="hero-link">
+          Skip to the case study
+        </a>
       </div>
-      {/* Glasses band */}
-      <div className="absolute flex h-[46.765px] items-center justify-center left-[603.18px] top-[449.25px] w-[190.463px]">
-        <div className="flex-none rotate-[1.01deg]">
-          <div className="h-[43.415px] relative w-[189.725px]">
-            <div className="absolute inset-[-6.78%_-1.55%_-0.29%_-1.55%]">
-              <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 195.615 46.4837">
-                <g>
-                  <path d={svgPaths.p3c997800} stroke="black" strokeWidth="0.841352" />
-                  <path d={svgPaths.p1ddeed00} stroke="black" strokeLinecap="round" strokeWidth="5.88947" />
-                </g>
-              </svg>
-            </div>
-          </div>
+      <div className="hero-figure" aria-hidden="true">
+        <div className="hero-face">
+          <span />
+          <span />
         </div>
+        <div className="hero-smile" />
       </div>
-      {/* Glasses image */}
-      <div className="absolute flex items-center justify-center left-[562.39px] size-[273.955px] top-[317.08px]">
-        <div className="flex-none rotate-[1.01deg]">
-          <div className="relative size-[269.233px]">
-            <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgReadingEyeglasses} />
-          </div>
-        </div>
-      </div>
-      {/* Mouth */}
-      <div className="absolute flex h-[67.348px] items-center justify-center left-[626.81px] top-[499.82px] w-[147.539px]">
-        <div className="flex-none rotate-[1.01deg]">
-          <div className="h-[64.767px] relative w-[146.416px]">
-            <svg className="absolute block inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 146.416 64.7669">
-              <g>
-                <path d={svgPaths.p644f2f0} fill="#1F1F1F" />
-                <path d={svgPaths.p134f7e80} fill="#9A2811" />
-                <path d={svgPaths.p2e50c500} fill="#FFFEFE" />
-              </g>
-            </svg>
-          </div>
-        </div>
-      </div>
-      {/* Cat (Group5) */}
-      <div className="absolute h-[308.673px] left-[541.04px] top-[90px] w-[386.036px]">
-        <div className="absolute inset-[0_0_-0.59%_0]">
-          <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 386.036 310.5">
-            <g>
-              <path d={svgPaths.p3d821a00} fill="#FCFCFC" />
-              <path d={svgPaths.p9bd8700} fill="#FCFCFC" />
-              <path d={svgPaths.p2920b300} fill="#FCFCFC" />
-              <path d={svgPaths.p971c700} fill="#FCFCFC" />
-              <path d={svgPaths.p2af86d40} fill="#FCFCFC" stroke="#FFA216" strokeWidth="4" />
-              <path d={svgPaths.p15f50ef0} fill="#FFE3E3" />
-              <path d={svgPaths.p11c64000} fill="#FFE3E3" />
-              <path d={svgPaths.p3005ec00} fill="#FEBB56" />
-              <path d={svgPaths.p3b665d00} stroke="black" strokeLinecap="round" strokeWidth="3" />
-              <path d={svgPaths.pcecaa80} fill="black" />
-              <path d={svgPaths.p85eed00} fill="black" />
-              <path d={svgPaths.p12a64d00} fill="#FFAF37" />
-              <path d={svgPaths.p8ef5500} fill="#FFAF37" />
-              <path d={svgPaths.p13633210} fill="#FFAF37" />
-              <path d={svgPaths.p3b828700} fill="#FFAF37" />
-              <path d={svgPaths.p20554b00} fill="#FFAF37" />
-              <path d={svgPaths.p52de400} fill="#FFAF37" />
-              <path d={svgPaths.p3e223300} fill="#FFAF37" />
-              <path d={svgPaths.p1102dd00} fill="#FFCB7D" />
-              <path d={svgPaths.pc138d40} fill="#FFCB7D" />
-              <path d={svgPaths.p1a30fc00} fill="#FFCB7D" />
-              <path d={svgPaths.p2f2fb940} fill="#FFCB7D" />
-              <path d={svgPaths.p2b83f070} fill="#FFAF37" />
-              <path d={svgPaths.p15c6ec00} fill="#FFAF37" />
-              <path d={svgPaths.p698c300} fill="#FFAF37" />
-              <path d={svgPaths.p251e2900} fill="#FFAF37" />
-              <path d={svgPaths.p284b2e00} fill="#FFAF37" />
-              <path d={svgPaths.p18a90180} stroke="#FFA216" strokeLinecap="round" strokeWidth="4" />
-              <path d={svgPaths.p1bd9bc80} stroke="#FFA216" strokeLinecap="round" strokeWidth="4" />
-              <path d={svgPaths.p2654f280} stroke="#FFAF37" strokeLinecap="round" strokeWidth="4" />
-              <path d={svgPaths.p3bf5cc00} fill="#FFDADA" />
-              <path d={svgPaths.p31918a80} fill="#FCFCFC" stroke="#FCFCFC" strokeLinecap="round" strokeWidth="4" />
-            </g>
-          </svg>
-        </div>
-      </div>
-    </>
+    </section>
   );
 }
 
-function CardRed() {
+function DecorativeObjects({ decorRefs }: { decorRefs: React.MutableRefObject<HTMLDivElement[]> }) {
   return (
     <div className="bg-[#fe4401] content-stretch flex h-[380px] items-start justify-center py-[16px] rounded-[20px] w-[440px]">
       <div className="font-['Robuck:Rounded',sans-serif] leading-[0] not-italic relative shrink-0 text-[0px] text-center text-white w-[396px] whitespace-pre-wrap">
@@ -388,223 +302,54 @@ DESIGNER</p>
   );
 }
 
-function CardPink() {
+function CaseStudyCard({
+  card,
+  index,
+  setRef,
+}: {
+  card: StudyCard;
+  index: number;
+  setRef: (node: HTMLDivElement | null) => void;
+}) {
   return (
-    <div className="bg-[#f781d4] content-stretch flex h-[380px] items-start justify-center py-[16px] relative rounded-[20px] w-[440px]">
-      <div className="font-['Robuck:Rounded',sans-serif] leading-[0] not-italic relative shrink-0 text-[#6c3089] text-[0px] text-center w-[396px] whitespace-pre-wrap">
-        <p className="leading-[normal] mb-0 text-[48px]">Project 1</p>
-        <p className="leading-[normal] mb-0 text-[48px]">​</p>
-        <p className="font-['ABC_Diatype_Rounded_Unlicensed_Trial:Regular',sans-serif] leading-[normal] text-[24px]">Placeholder</p>
+    <article ref={setRef} className="case-card" style={{ "--card-color": card.color, "--card-accent": card.accent } as React.CSSProperties}>
+      <div className="card-visual" aria-hidden="true">
+        <PlaceholderArt index={index} />
       </div>
-    </div>
+      <div className="card-copy">
+        <p>{card.eyebrow}</p>
+        <h3>{card.title}</h3>
+        <span>{card.body}</span>
+      </div>
+    </article>
   );
 }
 
-function CardBlue() {
+function PlaceholderArt({ index }: { index: number }) {
   return (
-    <div className="bg-[#2668fd] content-stretch flex h-[380px] items-start justify-center py-[16px] relative rounded-[20px] w-[440px]">
-      <div className="font-['Robuck:Rounded',sans-serif] leading-[0] not-italic relative shrink-0 text-[#fdcb40] text-[0px] text-center w-[396px] whitespace-pre-wrap">
-        <p className="leading-[normal] mb-0 text-[48px]">Project 2</p>
-        <p className="leading-[normal] mb-0 text-[48px]">​</p>
-        <p className="font-['ABC_Diatype_Rounded_Unlicensed_Trial:Regular',sans-serif] leading-[normal] text-[24px]">Placeholder</p>
-      </div>
-    </div>
+    <svg viewBox="0 0 240 160" role="img" aria-label="Placeholder project visual">
+      <rect x="12" y="16" width="216" height="128" rx="28" fill="var(--card-accent)" />
+      <circle cx={index % 2 === 0 ? 74 : 166} cy="72" r="32" fill="var(--card-color)" />
+      <path d="M54 116 C92 86, 132 148, 188 98" fill="none" stroke="#1f1b2d" strokeWidth="10" strokeLinecap="round" />
+      <path d="M158 42 l34 18 -34 18z" fill="#fdcb40" />
+    </svg>
   );
 }
 
-function CardWhite() {
+function CaseStudyContent() {
   return (
-    <div className="bg-white content-stretch flex h-[380px] items-start justify-center py-[16px] relative rounded-[20px] w-[440px]">
-      <div className="font-['Robuck:Rounded',sans-serif] leading-[0] not-italic relative shrink-0 text-[#fdcb40] text-[0px] text-center w-[396px] whitespace-pre-wrap">
-        <p className="leading-[normal] mb-0 text-[48px]">Project 3</p>
-        <p className="leading-[normal] mb-0 text-[48px]">​</p>
-        <p className="font-['ABC_Diatype_Rounded_Unlicensed_Trial:Regular',sans-serif] leading-[normal] text-[24px]">Placeholder</p>
+    <section id="case-study-content" className="case-study-content">
+      <p className="section-kicker">Full case study</p>
+      <h2>The normal content begins after the pinned reveal.</h2>
+      <div className="content-grid">
+        {contentBlocks.map((block) => (
+          <article key={block.label} className="content-card">
+            <p>{block.label}</p>
+            <h3>{block.heading}</h3>
+            <span>{block.copy}</span>
+          </article>
+        ))}
       </div>
-    </div>
-  );
-}
-
-// Background balloons/clouds from Wireframe7 SVG paths
-function Wireframe7BgOnly() {
-  return (
-    <div className="absolute inset-0">
-      <svg className="absolute block inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 1586.24 2916" xmlnsXlink="http://www.w3.org/1999/xlink">
-        <g id="Group 37">
-          <g clipPath="url(#clip0_bg)" id="Group 29">
-            <path d={svgPathsW7.p13582ea0} fill="white" />
-            <path d={svgPathsW7.p19999080} fill="white" />
-            <path d={svgPathsW7.p3edcfd80} fill="white" />
-          </g>
-          <g clipPath="url(#clip1_bg)" id="Group 9">
-            <path d={svgPathsW7.p2b8f4f80} fill="white" />
-            <path d={svgPathsW7.p34c0d500} fill="white" />
-            <path d={svgPathsW7.p329ceb00} fill="white" />
-          </g>
-          {/* Group40 balloon replaces basket-only group */}
-          {/* Orange balloon */}
-          <g>
-            <rect fill="#C95B45" height="64" rx="4" width="100" x="1145" y="1411" />
-            <line stroke="#C95B45" strokeLinecap="round" strokeWidth="4" x1="1111.68" x2="1146.91" y1="1339.91" y2="1411.32" />
-            <line stroke="#C95B45" strokeLinecap="round" strokeWidth="4" x1="1280.91" x2="1244.23" y1="1337.68" y2="1411.99" />
-            <g>
-              <path d={svgPathsW7.p3fb43100} fill="#FF8E43" />
-              <path d={svgPathsW7.p3c207f00} fill="#FF6B09" />
-              <path d={svgPathsW7.p16a24500} fill="#FF8E43" />
-              <path d={svgPathsW7.p1744ad00} fill="#FF6B09" />
-              <path d={svgPathsW7.p8f4e00} fill="#FF8E43" />
-              <path d={svgPathsW7.pbf3ad00} fill="#FF8E43" />
-              <path d={svgPathsW7.p5c61100} fill="#FF8E43" />
-              <path d={svgPathsW7.p2e204e00} fill="#FF8E43" />
-              <path d={svgPathsW7.p3940bf40} fill="#FF6B09" />
-              <path d={svgPathsW7.p19977d00} fill="#FF6B09" />
-              <path d={svgPathsW7.p14d6400} fill="#FF6B09" />
-              <path d={svgPathsW7.p387c00} fill="#FF8E43" />
-              <path d={svgPathsW7.p3077cc60} fill="#FF8E43" />
-              <path d={svgPathsW7.p202a6700} fill="#FF6B09" />
-              <path d={svgPathsW7.p11b67970} fill="#FF6B09" />
-              <path d={svgPathsW7.p22182400} stroke="#BD3505" />
-            </g>
-          </g>
-          <path d={svgPathsW7.p34b66680} fill="white" />
-          <g>
-            <path d={svgPathsW7.pe629400} fill="white" />
-            <path d={svgPathsW7.p13453a00} fill="white" />
-            <path d={svgPathsW7.p1cf9d780} fill="white" />
-          </g>
-          <g>
-            <path d={svgPathsW7.p2f158080} fill="white" />
-            <path d={svgPathsW7.pd22d770} fill="white" />
-            <path d={svgPathsW7.p37fad00} fill="white" />
-          </g>
-          {/* Pink balloon */}
-          <g>
-            <rect fill="#C95B45" height="51.6233" rx="3.22646" width="80.6614" x="1330.82" y="1994.12" />
-            <line stroke="#C95B45" strokeLinecap="round" strokeWidth="3.22646" x1="1303.94" x2="1332.36" y1="1936.78" y2="1994.38" />
-            <line stroke="#C95B45" strokeLinecap="round" strokeWidth="3.22646" x1="1440.45" x2="1410.87" y1="1934.98" y2="1994.92" />
-            <g>
-              <path d={svgPathsW7.p34fe67c0} fill="#FF6CDB" />
-              <path d={svgPathsW7.p35777cc0} fill="#FF6CDB" />
-              <path d={svgPathsW7.p3298f700} fill="#B60D3F" />
-              <path d={svgPathsW7.paac330} fill="#BA325A" />
-              <path d={svgPathsW7.p2158a380} fill="#B60D3F" />
-              <path d={svgPathsW7.p1ee00300} fill="#BA325A" />
-              <path d={svgPathsW7.p245bd200} fill="#FF6CDB" />
-              <path d={svgPathsW7.p37191400} fill="#FF6CDB" />
-              <path d={svgPathsW7.pb8e2470} fill="#FF6CDB" />
-              <path d={svgPathsW7.p2f948500} fill="#B60D3F" />
-            </g>
-          </g>
-          {/* Another pink balloon */}
-          <g>
-            <rect fill="#C95B45" height="51.6233" rx="3.22646" width="80.6614" x="1428.82" y="825.121" />
-            <line stroke="#C95B45" strokeLinecap="round" strokeWidth="3.22646" x1="1401.94" x2="1430.36" y1="767.778" y2="825.381" />
-            <line stroke="#C95B45" strokeLinecap="round" strokeWidth="3.22646" x1="1538.45" x2="1508.87" y1="765.979" y2="825.921" />
-            <g>
-              <path d={svgPathsW7.pfc99500} fill="#FF6CDB" />
-              <path d={svgPathsW7.p53f2400} fill="#FF6CDB" />
-              <path d={svgPathsW7.p9c05080} fill="#B60D3F" />
-              <path d={svgPathsW7.p4aacc00} fill="#BA325A" />
-              <path d={svgPathsW7.p113ea980} fill="#B60D3F" />
-              <path d={svgPathsW7.p12f23e00} fill="#BA325A" />
-              <path d={svgPathsW7.p82b9500} fill="#FF6CDB" />
-              <path d={svgPathsW7.p488e00} fill="#FF6CDB" />
-              <path d={svgPathsW7.p31649670} fill="#FF6CDB" />
-              <path d={svgPathsW7.p39f17df0} fill="#B60D3F" />
-            </g>
-          </g>
-          {/* Blue balloon */}
-          <g>
-            <rect fill="#C95B45" height="36.4937" rx="2.28086" width="57.0215" x="220.6" y="882.145" />
-            <line stroke="#C95B45" strokeLinecap="round" strokeWidth="2.28086" x1="201.6" x2="221.689" y1="841.608" y2="882.329" />
-            <line stroke="#C95B45" strokeLinecap="round" strokeWidth="2.28086" x1="298.097" x2="277.185" y1="840.336" y2="882.711" />
-            <g>
-              <path d={svgPathsW7.p2fee4200} fill="#68A8FF" />
-              <path d={svgPathsW7.p2efa7280} fill="#016DFF" />
-              <path d={svgPathsW7.p15a0c900} fill="#68A8FF" />
-              <path d={svgPathsW7.p2a082e20} fill="#016DFF" />
-              <path d={svgPathsW7.p146bbd80} fill="#68A8FF" />
-              <path d={svgPathsW7.p24a69700} fill="#68A8FF" />
-              <path d={svgPathsW7.p30ac8a80} fill="#68A8FF" />
-              <path d={svgPathsW7.p273c6600} fill="#68A8FF" />
-              <path d={svgPathsW7.p1fa45980} fill="#016DFF" />
-              <path d={svgPathsW7.p1c790d00} fill="#016DFF" />
-              <path d={svgPathsW7.p2183480} fill="#016DFF" />
-              <path d={svgPathsW7.pc5787f0} fill="#68A8FF" />
-              <path d={svgPathsW7.p21d391f0} fill="#68A8FF" />
-              <path d={svgPathsW7.p45e0640} fill="#016DFF" />
-              <path d={svgPathsW7.pea4f980} fill="#016DFF" />
-              <path d={svgPathsW7.p243718d0} stroke="black" strokeWidth="0.570215" />
-            </g>
-          </g>
-          {/* Another blue balloon */}
-          <g>
-            <rect fill="#C95B45" height="36.4937" rx="2.28086" width="57.0215" x="747.6" y="1820.15" />
-            <line stroke="#C95B45" strokeLinecap="round" strokeWidth="2.28086" x1="728.6" x2="748.689" y1="1779.61" y2="1820.33" />
-            <line stroke="#C95B45" strokeLinecap="round" strokeWidth="2.28086" x1="825.097" x2="804.185" y1="1778.34" y2="1820.71" />
-            <g>
-              <path d={svgPathsW7.p17640f00} fill="#68A8FF" />
-              <path d={svgPathsW7.p10add500} fill="#016DFF" />
-              <path d={svgPathsW7.p1155ee00} fill="#68A8FF" />
-              <path d={svgPathsW7.p235218f2} fill="#016DFF" />
-              <path d={svgPathsW7.p3f642d80} fill="#68A8FF" />
-              <path d={svgPathsW7.p23c00100} fill="#68A8FF" />
-              <path d={svgPathsW7.p1a9c4f80} fill="#68A8FF" />
-              <path d={svgPathsW7.p177948f0} fill="#68A8FF" />
-              <path d={svgPathsW7.p26c8c000} fill="#016DFF" />
-              <path d={svgPathsW7.p10e53d00} fill="#016DFF" />
-              <path d={svgPathsW7.pcdd3500} fill="#016DFF" />
-              <path d={svgPathsW7.p43b3080} fill="#68A8FF" />
-              <path d={svgPathsW7.p3bb91800} fill="#68A8FF" />
-              <path d={svgPathsW7.p11e71e80} fill="#016DFF" />
-              <path d={svgPathsW7.p3bf30a00} fill="#016DFF" />
-              <path d={svgPathsW7.peb7d200} stroke="black" strokeWidth="0.570215" />
-            </g>
-          </g>
-          {/* Orange balloon bottom */}
-          <g>
-            <rect fill="#C95B45" height="64" rx="4" width="100" x="106" y="2391" />
-            <line stroke="#C95B45" strokeLinecap="round" strokeWidth="4" x1="72.6785" x2="107.909" y1="2319.91" y2="2391.32" />
-            <line stroke="#C95B45" strokeLinecap="round" strokeWidth="4" x1="241.908" x2="205.234" y1="2317.68" y2="2391.99" />
-            <g>
-              <path d={svgPathsW7.p211bea00} fill="#FF8E43" />
-              <path d={svgPathsW7.p3ced4700} fill="#FF6B09" />
-              <path d={svgPathsW7.p2cb17000} fill="#FF8E43" />
-              <path d={svgPathsW7.p11efa180} fill="#FF6B09" />
-              <path d={svgPathsW7.p10e02e80} fill="#FF8E43" />
-              <path d={svgPathsW7.p36a39600} fill="#FF8E43" />
-              <path d={svgPathsW7.p18190980} fill="#FF8E43" />
-              <path d={svgPathsW7.p2c54a140} fill="#FF8E43" />
-              <path d={svgPathsW7.p31759880} fill="#FF6B09" />
-              <path d={svgPathsW7.p21aef000} fill="#FF6B09" />
-              <path d={svgPathsW7.p9b2a80} fill="#FF6B09" />
-              <path d={svgPathsW7.p2ed20a00} fill="#FF8E43" />
-              <path d={svgPathsW7.p3eda4c00} fill="#FF8E43" />
-              <path d={svgPathsW7.p3428d400} fill="#FF6B09" />
-              <path d={svgPathsW7.p246d7600} fill="#FF6B09" />
-              <path d={svgPathsW7.p2be3c300} stroke="#BD3505" />
-            </g>
-          </g>
-          {/* Small basket bottom */}
-          <g>
-            <rect fill="#C95B45" height="38.2196" rx="2.38873" width="59.7181" x="1212.14" y="2732.52" />
-            <line stroke="#C95B45" strokeLinecap="round" strokeWidth="2.38873" x1="1192.24" x2="1213.28" y1="2690.06" y2="2732.71" />
-            <line stroke="#C95B45" strokeLinecap="round" strokeWidth="2.38873" x1="1293.3" x2="1271.4" y1="2688.73" y2="2733.11" />
-            <path d={svgPathsW7.p1636b100} />
-          </g>
-        </g>
-        <defs>
-          <clipPath id="clip0_bg">
-            <rect fill="white" height="499" transform="translate(99 1020.74)" width="1440" />
-          </clipPath>
-          <clipPath id="clip1_bg">
-            <rect fill="white" height="499" transform="translate(84)" width="1440" />
-          </clipPath>
-        </defs>
-      </svg>
-      {/* Group40 balloon overlay at position of old basket (y=1443) */}
-      <div className="absolute" style={{ left: "10.22%", top: "4.07%", width: "13.87%", height: "11.01%" }}>
-        <Group40 />
-      </div>
-    </div>
+    </section>
   );
 }
