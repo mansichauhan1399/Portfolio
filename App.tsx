@@ -213,28 +213,188 @@ export default function App() {
 
 function HeroSection() {
   return (
-    <section className="hero-section">
-      <div className="hero-cloud hero-cloud-one" />
-      <div className="hero-cloud hero-cloud-two" />
-      <div className="hero-grid" />
-      <div className="hero-copy">
-        <p className="section-kicker">Portfolio concept</p>
-        <h1>A cheerful case study intro with a scroll-powered card stack.</h1>
-        <p>
-          Inspired by Maxima Therapy&apos;s bright, characterful energy: bold shapes, friendly copy,
-          and motion that makes the page feel hand-built.
-        </p>
-        <a href="#case-study-content" className="hero-link">
-          Skip to the case study
-        </a>
+    <section className="hero-section" aria-label="Associate Product Designer introduction">
+      <svg className="hero-scene" viewBox="0 0 1432 805" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <rect width="1432" height="805" fill="#ffd03f" />
+        <polygon className="hero-plane-motion" points="716,486 1217,710 242,710" fill="#ffc5c9" />
+        <polygon points="0,408 489,710 489,805 0,805" fill="#fff4b8" />
+        <polygon points="1432,408 927,710 927,805 1432,805" fill="#fff4b8" />
+
+        <g transform="translate(727 17)">
+          <g className="hero-svg-cloud hero-cloud-main-motion">
+            <circle cx="32" cy="64" r="32" />
+            <circle cx="88" cy="65" r="56" />
+            <circle cx="158" cy="64" r="56" />
+            <circle cx="218" cy="64" r="32" />
+          </g>
+        </g>
+        <g transform="translate(268 413)">
+          <g className="hero-svg-cloud hero-cloud-left-motion">
+            <circle cx="32" cy="45" r="32" />
+            <circle cx="88" cy="45" r="44" />
+            <circle cx="154" cy="45" r="44" />
+            <circle cx="218" cy="45" r="32" />
+          </g>
+        </g>
+
+        <g className="hero-house-motion" transform="translate(230 219)">
+          <polygon points="87,0 174,152 0,152" fill="#573dde" />
+          <rect x="48" y="152" width="174" height="148" fill="#ff2700" />
+          <rect x="13" y="300" width="244" height="70" fill="#ffc5c9" />
+        </g>
+
+        <g transform="translate(1028 188)">
+          <g className="hero-svg-sun">
+            <polygon points="100,0 122,55 191,43 168,102 207,116 154,146 171,207 110,166 99,229 69,167 33,178 45,123 0,114 52,78 18,43 66,47" fill="#ff7045" />
+            <circle cx="101" cy="103" r="66" fill="#ef6d42" />
+          </g>
+        </g>
+
+        <g transform="translate(900 380)">
+          <g className="hero-svg-flower">
+            <rect x="105" y="178" width="14" height="112" fill="#573dde" />
+            <circle cx="42" cy="70" r="42" fill="#05cbd1" />
+            <circle cx="112" cy="44" r="44" fill="#05cbd1" />
+            <circle cx="188" cy="71" r="43" fill="#05cbd1" />
+            <path d="M0 76 C45 37 76 76 113 115 C149 75 185 37 232 75 L232 120 C232 174 185 191 116 191 C47 191 1 174 1 119 Z" fill="#ff2700" />
+            <path d="M55 77 C82 30 151 28 181 78 C156 64 139 74 116 106 C92 74 75 64 55 77Z" fill="#ffd03f" />
+          </g>
+        </g>
+
+        <g transform="translate(510 92)">
+          <g className="hero-character-motion">
+            <g className="hero-cat-motion">
+              <path d="M48 90 L49 14 Q49 6 56 12 L115 56 Z" fill="#fffdf7" stroke="#ff9d16" strokeWidth="4" />
+              <path d="M205 55 L252 7 Q260 -1 263 11 L276 89 Z" fill="#fffdf7" stroke="#ff9d16" strokeWidth="4" />
+              <path d="M65 91 L56 30 L107 65 Z" fill="#ffd8e3" opacity=".9" />
+              <path d="M219 66 L253 29 L263 91 Z" fill="#ffd8e3" opacity=".9" />
+              <path d="M242 124 C330 121 347 202 307 239" fill="none" stroke="#ff9d16" strokeWidth="4" strokeLinecap="round" />
+              <path d="M340 62 C384 49 397 115 342 105" fill="none" stroke="#ff9d16" strokeWidth="5" strokeLinecap="round" />
+              <path d="M348 107 C380 134 352 204 310 228" fill="none" stroke="#ff9d16" strokeWidth="4" strokeLinecap="round" />
+              <path d="M344 145 C366 154 382 156 397 153" stroke="#ff9d16" strokeWidth="5" fill="none" strokeLinecap="round" />
+              <path d="M338 181 C362 192 383 197 400 196" stroke="#ff9d16" strokeWidth="5" fill="none" strokeLinecap="round" />
+              <path d="M62 170 C17 229 21 261 67 276" fill="#fffdf7" stroke="#ff9d16" strokeWidth="4" strokeLinecap="round" />
+              <path d="M211 206 C240 222 263 218 283 202 C280 242 248 266 207 259 C189 247 179 228 190 213 Z" fill="#fffdf7" />
+              <path d="M88 202 C71 240 42 260 15 256 C0 236 2 208 26 187 Z" fill="#fffdf7" />
+              <path d="M34 128 C35 54 96 36 151 39 C222 40 267 76 267 129 C267 186 209 213 151 211 C83 210 33 186 34 128Z" fill="#ffbb50" />
+              <path d="M34 128 C35 54 96 36 151 39 C147 90 117 117 68 137 C50 141 40 136 34 128Z" fill="#ffbb50" />
+              <path d="M151 39 C176 104 208 124 267 106 C277 176 215 213 151 211 C80 210 31 182 34 128 C80 138 119 113 151 39Z" fill="#fffdf7" />
+              <path d="M34 128 C35 54 96 36 151 39 C222 40 267 76 267 129 C267 186 209 213 151 211 C83 210 33 186 34 128Z" fill="none" stroke="#ff9d16" strokeWidth="4" strokeLinecap="round" />
+              <path d="M132 42 L154 87 L164 40" fill="#ffa72f" opacity=".65" />
+              <path d="M32 126 C48 129 58 128 70 122 M37 143 C50 142 60 139 71 134 M248 115 C262 111 274 106 286 101 M247 128 C263 127 275 123 288 118" stroke="#ffa72f" strokeWidth="4" fill="none" strokeLinecap="round" />
+              <path d="M90 114 C91 99 111 99 112 114" stroke="#050505" strokeWidth="8" fill="none" strokeLinecap="round" />
+              <path d="M168 114 C169 99 189 99 190 114" stroke="#050505" strokeWidth="8" fill="none" strokeLinecap="round" />
+              <path d="M129 137 L153 137 L141 146 Z" fill="#ffc5c9" />
+              <path d="M141 148 L141 162 M121 166 C132 171 139 164 141 160 C145 166 156 171 166 164" stroke="#050505" strokeWidth="3" fill="none" strokeLinecap="round" />
+            </g>
+
+            <g className="hero-person" transform="translate(0 209)">
+              <path d="M30 188 C1 96 45 5 181 5 C315 5 363 96 359 185 L359 293 C338 321 275 333 181 333 C87 333 24 321 12 292 C27 262 30 231 30 188Z" fill="#126cf5" />
+              <path d="M86 97 C108 52 144 31 180 20 C224 32 272 60 294 98 C263 101 223 87 189 67 C172 95 137 113 86 97Z" fill="#ffd7c7" />
+              <path d="M83 113 C111 72 144 54 182 52 C228 51 267 74 296 113 C279 117 233 112 191 76 C164 109 120 124 83 113Z" fill="#126cf5" />
+              <ellipse cx="44" cy="143" rx="24" ry="31" fill="#ffd7c7" />
+              <ellipse cx="320" cy="143" rx="24" ry="31" fill="#ffd7c7" />
+              <ellipse cx="181" cy="167" rx="135" ry="116" fill="#ffd7c7" />
+              <path d="M61 137 C88 119 124 117 157 130 C157 171 141 190 101 190 C69 190 61 167 61 137Z" fill="none" stroke="#050505" strokeWidth="8" />
+              <path d="M203 130 C235 117 273 119 301 137 C300 167 292 190 260 190 C220 190 204 171 203 130Z" fill="none" stroke="#050505" strokeWidth="8" />
+              <path d="M155 136 C172 132 188 132 205 136" stroke="#050505" strokeWidth="8" strokeLinecap="round" />
+              <path d="M88 156 C108 139 131 139 149 156" stroke="#050505" strokeWidth="6" fill="none" strokeLinecap="round" />
+              <path d="M231 156 C251 139 274 139 292 156" stroke="#050505" strokeWidth="6" fill="none" strokeLinecap="round" />
+              <path d="M178 194 C184 187 191 190 195 196" stroke="#6a3e35" strokeWidth="1" fill="none" />
+              <path d="M113 216 H254 C255 261 226 283 184 283 C141 283 112 261 113 216Z" fill="#171717" />
+              <path d="M113 216 H254 V231 H113 Z" fill="#ffffff" />
+              <ellipse cx="184" cy="279" rx="45" ry="12" fill="#9b2b12" />
+            </g>
+          </g>
+        </g>
+      </svg>
+      <div className="hero-title-card" aria-hidden="true">
+        <h1>
+          <span>Associate Product</span>
+          <span>Designer</span>
+        </h1>
+      <h1 className="hero-sr-title">Associate Product Designer</h1>
+          </g>
+        </g>
+
+        <g className="hero-house-motion" transform="translate(230 219)">
+          <polygon points="87,0 174,152 0,152" fill="#573dde" />
+          <rect x="48" y="152" width="174" height="148" fill="#ff2700" />
+          <rect x="13" y="300" width="244" height="70" fill="#ffc5c9" />
+        </g>
+
+        <g transform="translate(1028 188)">
+          <g className="hero-svg-sun">
+            <polygon points="100,0 122,55 191,43 168,102 207,116 154,146 171,207 110,166 99,229 69,167 33,178 45,123 0,114 52,78 18,43 66,47" fill="#ff7045" />
+            <circle cx="101" cy="103" r="66" fill="#ef6d42" />
+          </g>
+        </g>
+
+        <g transform="translate(900 380)">
+          <g className="hero-svg-flower">
+            <rect x="105" y="178" width="14" height="112" fill="#573dde" />
+            <circle cx="42" cy="70" r="42" fill="#05cbd1" />
+            <circle cx="112" cy="44" r="44" fill="#05cbd1" />
+            <circle cx="188" cy="71" r="43" fill="#05cbd1" />
+            <path d="M0 76 C45 37 76 76 113 115 C149 75 185 37 232 75 L232 120 C232 174 185 191 116 191 C47 191 1 174 1 119 Z" fill="#ff2700" />
+            <path d="M55 77 C82 30 151 28 181 78 C156 64 139 74 116 106 C92 74 75 64 55 77Z" fill="#ffd03f" />
+          </g>
+        </g>
+
+        <g transform="translate(510 92)">
+          <g className="hero-character-motion">
+            <g className="hero-cat-motion">
+              <path d="M48 90 L49 14 Q49 6 56 12 L115 56 Z" fill="#fffdf7" stroke="#ff9d16" strokeWidth="4" />
+              <path d="M205 55 L252 7 Q260 -1 263 11 L276 89 Z" fill="#fffdf7" stroke="#ff9d16" strokeWidth="4" />
+              <path d="M65 91 L56 30 L107 65 Z" fill="#ffd8e3" opacity=".9" />
+              <path d="M219 66 L253 29 L263 91 Z" fill="#ffd8e3" opacity=".9" />
+              <path d="M242 124 C330 121 347 202 307 239" fill="none" stroke="#ff9d16" strokeWidth="4" strokeLinecap="round" />
+              <path d="M340 62 C384 49 397 115 342 105" fill="none" stroke="#ff9d16" strokeWidth="5" strokeLinecap="round" />
+              <path d="M348 107 C380 134 352 204 310 228" fill="none" stroke="#ff9d16" strokeWidth="4" strokeLinecap="round" />
+              <path d="M344 145 C366 154 382 156 397 153" stroke="#ff9d16" strokeWidth="5" fill="none" strokeLinecap="round" />
+              <path d="M338 181 C362 192 383 197 400 196" stroke="#ff9d16" strokeWidth="5" fill="none" strokeLinecap="round" />
+              <path d="M62 170 C17 229 21 261 67 276" fill="#fffdf7" stroke="#ff9d16" strokeWidth="4" strokeLinecap="round" />
+              <path d="M211 206 C240 222 263 218 283 202 C280 242 248 266 207 259 C189 247 179 228 190 213 Z" fill="#fffdf7" />
+              <path d="M88 202 C71 240 42 260 15 256 C0 236 2 208 26 187 Z" fill="#fffdf7" />
+              <path d="M34 128 C35 54 96 36 151 39 C222 40 267 76 267 129 C267 186 209 213 151 211 C83 210 33 186 34 128Z" fill="#ffbb50" />
+              <path d="M34 128 C35 54 96 36 151 39 C147 90 117 117 68 137 C50 141 40 136 34 128Z" fill="#ffbb50" />
+              <path d="M151 39 C176 104 208 124 267 106 C277 176 215 213 151 211 C80 210 31 182 34 128 C80 138 119 113 151 39Z" fill="#fffdf7" />
+              <path d="M34 128 C35 54 96 36 151 39 C222 40 267 76 267 129 C267 186 209 213 151 211 C83 210 33 186 34 128Z" fill="none" stroke="#ff9d16" strokeWidth="4" strokeLinecap="round" />
+              <path d="M132 42 L154 87 L164 40" fill="#ffa72f" opacity=".65" />
+              <path d="M32 126 C48 129 58 128 70 122 M37 143 C50 142 60 139 71 134 M248 115 C262 111 274 106 286 101 M247 128 C263 127 275 123 288 118" stroke="#ffa72f" strokeWidth="4" fill="none" strokeLinecap="round" />
+              <path d="M90 114 C91 99 111 99 112 114" stroke="#050505" strokeWidth="8" fill="none" strokeLinecap="round" />
+              <path d="M168 114 C169 99 189 99 190 114" stroke="#050505" strokeWidth="8" fill="none" strokeLinecap="round" />
+              <path d="M129 137 L153 137 L141 146 Z" fill="#ffc5c9" />
+              <path d="M141 148 L141 162 M121 166 C132 171 139 164 141 160 C145 166 156 171 166 164" stroke="#050505" strokeWidth="3" fill="none" strokeLinecap="round" />
+            </g>
+
+            <g className="hero-person" transform="translate(0 209)">
+              <path d="M30 188 C1 96 45 5 181 5 C315 5 363 96 359 185 L359 293 C338 321 275 333 181 333 C87 333 24 321 12 292 C27 262 30 231 30 188Z" fill="#126cf5" />
+              <path d="M86 97 C108 52 144 31 180 20 C224 32 272 60 294 98 C263 101 223 87 189 67 C172 95 137 113 86 97Z" fill="#ffd7c7" />
+              <path d="M83 113 C111 72 144 54 182 52 C228 51 267 74 296 113 C279 117 233 112 191 76 C164 109 120 124 83 113Z" fill="#126cf5" />
+              <ellipse cx="44" cy="143" rx="24" ry="31" fill="#ffd7c7" />
+              <ellipse cx="320" cy="143" rx="24" ry="31" fill="#ffd7c7" />
+              <ellipse cx="181" cy="167" rx="135" ry="116" fill="#ffd7c7" />
+              <path d="M61 137 C88 119 124 117 157 130 C157 171 141 190 101 190 C69 190 61 167 61 137Z" fill="none" stroke="#050505" strokeWidth="8" />
+              <path d="M203 130 C235 117 273 119 301 137 C300 167 292 190 260 190 C220 190 204 171 203 130Z" fill="none" stroke="#050505" strokeWidth="8" />
+              <path d="M155 136 C172 132 188 132 205 136" stroke="#050505" strokeWidth="8" strokeLinecap="round" />
+              <path d="M88 156 C108 139 131 139 149 156" stroke="#050505" strokeWidth="6" fill="none" strokeLinecap="round" />
+              <path d="M231 156 C251 139 274 139 292 156" stroke="#050505" strokeWidth="6" fill="none" strokeLinecap="round" />
+              <path d="M178 194 C184 187 191 190 195 196" stroke="#6a3e35" strokeWidth="1" fill="none" />
+              <path d="M113 216 H254 C255 261 226 283 184 283 C141 283 112 261 113 216Z" fill="#171717" />
+              <path d="M113 216 H254 V231 H113 Z" fill="#ffffff" />
+              <ellipse cx="184" cy="279" rx="45" ry="12" fill="#9b2b12" />
+            </g>
+          </g>
+        </g>
+      </svg>
+      <div className="hero-title-card" aria-hidden="true">
+        <h1>
+          <span>Associate Product</span>
+          <span>Designer</span>
+        </h1>
       </div>
-      <div className="hero-figure" aria-hidden="true">
-        <div className="hero-face">
-          <span />
-          <span />
-        </div>
-        <div className="hero-smile" />
-      </div>
+      <h1 className="hero-sr-title">Associate Product Designer</h1>
     </section>
   );
 }
